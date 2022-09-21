@@ -8,7 +8,7 @@ button.addEventListener("click", async () => {
 	if (game.value != "") {
 		try {
 			let r = await fetch(src + `games/${game.value}`).then(x => x.json())
-			if (r.status == 404) { alert("The game does not exist") } else if (r.status != undefined) { alert("There was an error, please try again later") }
+			if (r.status == 404) { alert("The game does not exist"); button.disabled = false; return} else if (r.status != undefined) { alert("There was an error, please try again later") }
 			let lvls = await fetch(src + `games/${r.data.id}/levels`).then(x => x.json()).then(x => x.data)
 			let cats = await fetch(src + `games/${r.data.id}/categories`).then(x => x.json()).then(x => x.data)
 			let vari = await fetch(src + `games/${r.data.id}/variables`).then(x => x.json()).then(x => x.data)
@@ -101,11 +101,12 @@ button.addEventListener("click", async () => {
                     })
                     console.log(appvari)
                 }
+
             }
             lvlc(lvls); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		}
-		catch (e) {alert(`There was an error, please try again later. \n\n${e}`); button.disabled = false; throw e}
+		catch (e) {alert(`There was an error, please contact Bluestonex64. \n\n${e}`); button.disabled = false; throw e}
 	}
 	button.disabled = false
 })
