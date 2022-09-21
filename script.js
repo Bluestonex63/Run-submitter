@@ -63,6 +63,7 @@ button.addEventListener("click", async () => {
                         form.appendChild(lvlsel)
                         document.querySelector("#submission").innerHTML = ""
                         document.querySelector("#submission").appendChild(form)
+                        lvlsel.addEventListener("change", () => {varc(vari, lvls, cats)})
                     } else {
                         const catsel = document.querySelector("#catsel")
                         document.querySelector("#submissionform").innerHTML = ""
@@ -79,18 +80,29 @@ button.addEventListener("click", async () => {
                 let lvlsel = document.querySelector("#lvlsel")
                 let popcatselv = catselv.split(" - ")
                 popcatselv.pop()
-                if (lvls.length == 0 || lvlsel == null) {
+                if (lvlsel == null) {
                     let appvari = vari.filter(variable => { 
                         if (variable.category != null) {
-                            return cats.find(cat => variable.category == cat.id).name == popcatselv.join("") && variable.scope.type == "full-game"
+                            return cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
                         } else {
-                            return variable.scope.type == "full-game"
+                            return variable.scope.type == "full-game" || variable.scope.type == "global"
+                        }
+                    })
+                    console.log(appvari)
+                } else {
+                    let appvari = vari.filter(variable => { 
+                        if (variable.category != null && variable.scope.type != "single-level" ) {
+                            return cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
+                        } else if (variable.scope.type == "single-level" && variable.category != null) {
+                            return lvls.find(level => level.id == variable.scope.level).name == lvlsel.value && cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
+                        } else {
+                            return variable.scope.type == "all-levels" || variable.scope.type == "global"
                         }
                     })
                     console.log(appvari)
                 }
             }
-            lvlc(lvls)
+            lvlc(lvls); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		}
 		catch (e) {alert(`There was an error, please try again later. \n\n${e}`); button.disabled = false; throw e}
