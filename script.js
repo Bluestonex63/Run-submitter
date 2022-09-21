@@ -29,6 +29,7 @@ button.addEventListener("click", async () => {
                     catsel.appendChild(opt)
                 })
 				form.appendChild(catlb)
+                form.appendChild(document.createElement("br"))
 				form.appendChild(catsel)
                 document.querySelector("#submission").innerHTML = ""
 				document.querySelector("#submission").appendChild(form)
@@ -49,9 +50,11 @@ button.addEventListener("click", async () => {
                     let catlb = document.createElement("label")
 				    catlb.innerHTML = "<label>Category: </label>"
                     form.appendChild(catlb)
+                    form.appendChild(document.createElement("br"))
                     form.appendChild(catsel)
                     form.appendChild(document.createElement("p"))
                     form.appendChild(lvllb)
+                    form.appendChild(document.createElement("br"))
                     form.appendChild(lvlsel)
                     document.querySelector("#submission").innerHTML = ""
                     document.querySelector("#submission").appendChild(form)
@@ -61,6 +64,7 @@ button.addEventListener("click", async () => {
                     let catlb = document.createElement("label")
 				    catlb.innerHTML = "<label>Category: </label>"
                     document.querySelector("#submissionform").appendChild(catlb)
+                    document.querySelector("#submissionform").appendChild(document.createElement("br"))
                     document.querySelector("#submissionform").appendChild(catsel)
                 }
             }

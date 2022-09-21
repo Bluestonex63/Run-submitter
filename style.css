@@ -1,0 +1,41 @@
+#submission {
+    border-top: dotted gray 3px;
+    padding-top: 20px;
+}
+input, select {
+    width:25%;
+    margin-top:10px;
+    border-radius: 10px;
+    border: 1px;
+    background-color: rgb(224, 220, 220);
+}
+
+button {
+    height: 30px;
+    margin-top:10px;
+    border-radius: 5px;
+    border: solid black 1px;
+    background-color: rgb(224, 220, 220);
+}
+button:hover {
+    height: 30px;
+    margin-top:10px;
+    border-radius: 5px;
+    border: solid black 1px;
+    background-color: rgb(206, 205, 205);
+}
+button:active {
+    height: 30px;
+    margin-top:10px;
+    border-radius: 5px;
+    border: solid black 1px;
+    background-color: rgb(190, 187, 187);
+}
+button:disabled {
+    height: 30px;
+    margin-top:10px;
+    border-radius: 5px;
+    border:1px;
+    background-color: rgb(234, 233, 233);
+    font-weight: lighter;
+}
