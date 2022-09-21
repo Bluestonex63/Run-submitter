@@ -36,8 +36,10 @@ button.addEventListener("click", async () => {
 			} 
             let lvlc = (lvls) => {
                 let form = document.querySelector("#submissionform")
-                let isIL = document.querySelector("#catsel").value.split(" - ").splice(document.querySelector("#catsel").value.split(" - ").length-1).includes("IL")
-                if (document.querySelector("#lvlsel") == null || !isIL) {
+                let catselv = document.querySelector("#catsel").value
+                let lvlselv = document.querySelector("#lvlsel")
+                let isIL = catselv.split(" - ").splice(catselv.split(" - ").length-1).includes("IL")
+                if (lvlselv == null || !isIL) {
                     if (lvls.length != 0 && isIL) {
                         let lvllb = document.createElement("label")
                         lvllb.innerHTML = "<label>Levels: </label>"
@@ -72,8 +74,24 @@ button.addEventListener("click", async () => {
                     }
                 }
             }
+            let varc = (vari, lvls, cats) => {
+                let catselv = document.querySelector("#catsel").value
+                let lvlsel = document.querySelector("#lvlsel")
+                let popcatselv = catselv.split(" - ")
+                popcatselv.pop()
+                if (lvls.length == 0 || lvlsel == null) {
+                    let appvari = vari.filter(variable => { 
+                        if (variable.category != null) {
+                            return cats.find(cat => variable.category == cat.id).name == popcatselv.join("") && variable.scope.type == "full-game"
+                        } else {
+                            return variable.scope.type == "full-game"
+                        }
+                    })
+                    console.log(appvari)
+                }
+            }
             lvlc(lvls)
-            document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls)})
+            document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		}
 		catch (e) {alert(`There was an error, please try again later. \n\n${e}`); button.disabled = false; throw e}
 	}
