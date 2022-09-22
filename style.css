@@ -1,12 +1,12 @@
 input, select {
-    width:280px;
+    width:80%;
     margin-top:10px;
     border-radius: 10px;
     border: 1px;
     background-color: rgb(224, 220, 220);
 }
 #key, #game {width:25%;}
-#submission, #variables {width: 300px;}
+#submission, #variables {width: 25%;}
 button {
     height: 30px;
     margin-top:10px;

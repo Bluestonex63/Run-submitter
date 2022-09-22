@@ -3,7 +3,6 @@ const game = document.querySelector("#game")
 const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
 
-
 button.addEventListener("click", async () => {
 	button.disabled = true
 	if (game.value != "") {
@@ -127,7 +126,23 @@ button.addEventListener("click", async () => {
                             for (value of Object.keys(appvar.values.values)) {
                                 let op = document.createElement("option")
                                 op.value = value
-                                op.innerHTML = `<option>${appvar.values.values[value].label}</option>`
+                                op.innerHTML = `${appvar.values.values[value].label}`
+                                inp.appendChild(op)
+                            }
+                            label.innerHTML = `${appvar.name}: `
+                            form.appendChild(document.createElement("p"))
+                            form.appendChild(label)
+                            form.appendChild(document.createElement("br"))
+                            form.appendChild(inp)
+                        } else if (!appvar.mandatory && !appvar["user-defined"]) {
+                            let op = document.createElement("option")
+                            op.value = null
+                            op.innerHTML = ` - `
+                            inp.appendChild(op)
+                            for (value of Object.keys(appvar.values.values)) {
+                                let op = document.createElement("option")
+                                op.value = value
+                                op.innerHTML = `${appvar.values.values[value].label}`
                                 inp.appendChild(op)
                             }
                             label.innerHTML = `${appvar.name}: `
@@ -142,7 +157,7 @@ button.addEventListener("click", async () => {
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		}
-		catch (e) {alert(`There was an error, please contact Bluestonex64. \n\n${e}`); button.disabled = false; throw e}
+		catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}
 	}
 	button.disabled = false
 })
