@@ -43,22 +43,19 @@ button.addEventListener("click", async () => {
                 if (lvlselv == null || !isIL) {
                     if (lvls.length != 0 && isIL) {
                         let lvllb = document.createElement("label")
-                        let lh3 = document.createElement("h3")
                         lvllb.innerHTML = "Select the level: "
-                        lh3.innerHTML = "Level: "
-                        lh3.id = "lvllb"
                         let lvlsel = document.createElement("select")
                         lvlsel.id = "lvlsel"
                         lvls.forEach(lvl => {
                             let opt = document.createElement("option");
-                            opt.innerHTML = `<option>${lvl["name"]}</option>`
+                            opt.innerHTML = `${lvl["name"]}`
                             lvlsel.appendChild(opt)
                         })
                         const catsel = document.querySelector("#catsel")
                         form.innerHTML = ""
                         let catlb = document.createElement("label")
                         let ch3 = document.createElement("h3")
-                        ch3.innerHTML = "Category: "
+                        ch3.innerHTML = "Category & Level: "
                         ch3.id = "catlb"
                         catlb.innerHTML = "Select the category: "
                         form.appendChild(ch3)
@@ -66,8 +63,6 @@ button.addEventListener("click", async () => {
                         form.appendChild(catlb)
                         form.appendChild(document.createElement("br"))
                         form.appendChild(catsel)
-                        form.appendChild(document.createElement("p"))
-                        form.appendChild(lh3)
                         form.appendChild(document.createElement("p"))
                         form.appendChild(lvllb)
                         form.appendChild(document.createElement("br"))
