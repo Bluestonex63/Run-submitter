@@ -46,8 +46,3 @@ button:disabled {
     margin-top: 10px;
 }
 .invisible {display:none;}
-#definedvar {
-    display:flex;
-    padding-top: 0px;
-    margin-top: 0px;
-}
