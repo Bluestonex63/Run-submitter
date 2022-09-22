@@ -1,5 +1,6 @@
 input, select {
     width:80%;
+    box-sizing:border-box;
     margin-top:10px;
     border-radius: 10px;
     border: 1px;
@@ -45,3 +46,8 @@ button:disabled {
     margin-top: 10px;
 }
 .invisible {display:none;}
+#definedvar {
+    display:flex;
+    padding-top: 0px;
+    margin-top: 0px;
+}

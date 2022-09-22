@@ -150,9 +150,69 @@ button.addEventListener("click", async () => {
                             form.appendChild(label)
                             form.appendChild(document.createElement("br"))
                             form.appendChild(inp)
+                        } else if (appvar.mandatory && appvar["user-defined"]) {
+                            let op = document.createElement("option")
+                            op.value = 1
+                            op.innerHTML = `Define`
+                            inp.appendChild(op)
+                            for (value of Object.keys(appvar.values.values)) {
+                                let op = document.createElement("option")
+                                op.value = value
+                                op.innerHTML = `${appvar.values.values[value].label}`
+                                inp.appendChild(op)
+                            }
+                            label.innerHTML = `${appvar.name}: `
+                            form.appendChild(document.createElement("p"))
+                            form.appendChild(label)
+                            form.appendChild(document.createElement("br"))
+                            form.appendChild(inp)
+                            let definedvar = document.createElement("input")
+                            definedvar.id = "definedvar"
+                            definedvar.type = "text"
+                            form.appendChild(definedvar)
+                            inp.addEventListener("change", () => {
+                                if (document.querySelector("#definedvar") == null && inp.value == 1) {
+                                    let definedvar = document.createElement("input")
+                                    definedvar.id = "definedvar"
+                                    definedvar.type = "text"
+                                    form.appendChild(definedvar)
+                                } else if (document.querySelector("#definedvar") != null && inp.value != 1) {
+                                    form.removeChild(document.querySelector("#definedvar"))
+                                } 
+                            })
+                        } else if (!appvar.mandatory && appvar["user-defined"]) {
+                            let op = document.createElement("option")
+                            op.value = null
+                            op.innerHTML = ` - `
+                            inp.appendChild(op)
+                            let op2 = document.createElement("option")
+                            op2.value = 1
+                            op2.innerHTML = `Define`
+                            inp.appendChild(op2)
+                            for (value of Object.keys(appvar.values.values)) {
+                                let op = document.createElement("option")
+                                op.value = value
+                                op.innerHTML = `${appvar.values.values[value].label}`
+                                inp.appendChild(op)
+                            }
+                            label.innerHTML = `${appvar.name}: `
+                            form.appendChild(document.createElement("p"))
+                            form.appendChild(label)
+                            form.appendChild(document.createElement("br"))
+                            form.appendChild(inp)
+                            inp.addEventListener("change", () => {
+                                if (document.querySelector("#definedvar") == null && inp.value == 1) {
+                                    let definedvar = document.createElement("input")
+                                    definedvar.id = "definedvar"
+                                    definedvar.type = "text"
+                                    form.appendChild(definedvar)
+                                } else if (document.querySelector("#definedvar") != null && inp.value != 1) {
+                                    form.removeChild(document.querySelector("#definedvar"))
+                                } 
+                            })
                         }
                     })
-                }
+                }   
             }
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
