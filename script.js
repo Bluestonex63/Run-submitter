@@ -3,6 +3,7 @@ const game = document.querySelector("#game")
 const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
 
+
 button.addEventListener("click", async () => {
 	button.disabled = true
 	if (game.value != "") {
@@ -79,18 +80,18 @@ button.addEventListener("click", async () => {
                 let catselv = document.querySelector("#catsel").value
                 let lvlsel = document.querySelector("#lvlsel")
                 let popcatselv = catselv.split(" - ")
+                let appvari = []
                 popcatselv.pop()
                 if (lvlsel == null) {
-                    let appvari = vari.filter(variable => { 
+                    appvari = vari.filter(variable => { 
                         if (variable.category != null) {
                             return cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
                         } else {
                             return variable.scope.type == "full-game" || variable.scope.type == "global"
                         }
                     })
-                    console.log(appvari)
                 } else {
-                    let appvari = vari.filter(variable => { 
+                    appvari = vari.filter(variable => { 
                         if (variable.category != null && variable.scope.type != "single-level" ) {
                             return cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
                         } else if (variable.scope.type == "single-level" && variable.category != null) {
@@ -99,9 +100,23 @@ button.addEventListener("click", async () => {
                             return variable.scope.type == "all-levels" || variable.scope.type == "global"
                         }
                     })
-                    console.log(appvari)
                 }
-
+                let form = document.querySelector("#varform")
+                if (appvari.length == 0) { form.innerHTML == "" } else {
+                    appvari.forEach(appvar => {
+// put every variable in display, dont forget to make non mandatory variables have a blank option
+                        let inp = document.createElement("select")
+                        if (appvar.mandatory && !appvar["user-defined"]) {
+                            for (value of Object.keys(appvar.values.values)) {
+                                let op = document.createElement("option")
+                                op.value = value
+                                op.innerHTML = `<option>${appvar.values.values[value].label}</option>`
+                                inp.appendChild(op)
+                            }
+                            form.appendChild(inp)
+                        }
+                    })
+                }
             }
             lvlc(lvls); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
