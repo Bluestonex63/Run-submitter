@@ -17,7 +17,7 @@ button.addEventListener("click", async () => {
             form.id = "submissionform"
 			if (cats.length != 0) { 
 				let catlb = document.createElement("label")
-				catlb.innerHTML = "<label>Category: </label>"
+				catlb.innerHTML = "<label><h3 id='catlb'>Category: </h3></label>"
 				let catsel = document.createElement("select")
                 catsel.id = "catsel"
 				cats.forEach(cat => {
@@ -27,6 +27,7 @@ button.addEventListener("click", async () => {
                     } else {
                         opt.innerHTML = `<option>${cat["name"]} - IL</option>`
                     }
+                    opt.value = cat["id"]
                     catsel.appendChild(opt)
                 })
 				form.appendChild(catlb)
@@ -39,11 +40,14 @@ button.addEventListener("click", async () => {
                 let form = document.querySelector("#submissionform")
                 let catselv = document.querySelector("#catsel").value
                 let lvlselv = document.querySelector("#lvlsel")
-                let isIL = catselv.split(" - ").splice(catselv.split(" - ").length-1).includes("IL")
+                let isIL = cats.some(cat => (catselv == cat.id && cat.type == "per-level"))
                 if (lvlselv == null || !isIL) {
                     if (lvls.length != 0 && isIL) {
                         let lvllb = document.createElement("label")
-                        lvllb.innerHTML = "<label>Levels: </label>"
+                        let lh3 = document.createElement("h3")
+                        lvllb.innerHTML = "Select the level: "
+                        lh3.innerHTML = "Level: "
+                        lh3.id = "lvllb"
                         let lvlsel = document.createElement("select")
                         lvlsel.id = "lvlsel"
                         lvls.forEach(lvl => {
@@ -54,10 +58,17 @@ button.addEventListener("click", async () => {
                         const catsel = document.querySelector("#catsel")
                         form.innerHTML = ""
                         let catlb = document.createElement("label")
-                        catlb.innerHTML = "<label>Category: </label>"
+                        let ch3 = document.createElement("h3")
+                        ch3.innerHTML = "Category: "
+                        ch3.id = "catlb"
+                        catlb.innerHTML = "Select the category: "
+                        form.appendChild(ch3)
+                        form.appendChild(document.createElement("p"))
                         form.appendChild(catlb)
                         form.appendChild(document.createElement("br"))
                         form.appendChild(catsel)
+                        form.appendChild(document.createElement("p"))
+                        form.appendChild(lh3)
                         form.appendChild(document.createElement("p"))
                         form.appendChild(lvllb)
                         form.appendChild(document.createElement("br"))
@@ -69,7 +80,12 @@ button.addEventListener("click", async () => {
                         const catsel = document.querySelector("#catsel")
                         document.querySelector("#submissionform").innerHTML = ""
                         let catlb = document.createElement("label")
-                        catlb.innerHTML = "<label>Category: </label>"
+                        let cath3 = document.createElement("h3")
+                        cath3.innerHTML = "Category: "
+                        cath3.id = "catlb"
+                        catlb.innerHTML = "Select the category:"
+                        document.querySelector("#submissionform").appendChild(cath3)
+                        document.querySelector("#submissionform").appendChild(document.createElement("p"))
                         document.querySelector("#submissionform").appendChild(catlb)
                         document.querySelector("#submissionform").appendChild(document.createElement("br"))
                         document.querySelector("#submissionform").appendChild(catsel)
@@ -79,13 +95,11 @@ button.addEventListener("click", async () => {
             let varc = (vari, lvls, cats) => {
                 let catselv = document.querySelector("#catsel").value
                 let lvlsel = document.querySelector("#lvlsel")
-                let popcatselv = catselv.split(" - ")
                 let appvari = []
-                popcatselv.pop()
                 if (lvlsel == null) {
                     appvari = vari.filter(variable => { 
                         if (variable.category != null) {
-                            return cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
+                            return cats.find(cat => variable.category == cat.id).id == catselv
                         } else {
                             return variable.scope.type == "full-game" || variable.scope.type == "global"
                         }
@@ -93,19 +107,22 @@ button.addEventListener("click", async () => {
                 } else {
                     appvari = vari.filter(variable => { 
                         if (variable.category != null && variable.scope.type != "single-level" ) {
-                            return cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
+                            return cats.find(cat => variable.category == cat.id).id == catselv
                         } else if (variable.scope.type == "single-level" && variable.category != null) {
-                            return lvls.find(level => level.id == variable.scope.level).name == lvlsel.value && cats.find(cat => variable.category == cat.id).name == popcatselv.join("")
+                            return lvls.find(level => level.id == variable.scope.level).name == lvlsel.value && cats.find(cat => variable.category == cat.id).id == catselv
                         } else {
                             return variable.scope.type == "all-levels" || variable.scope.type == "global"
                         }
                     })
                 }
                 let form = document.querySelector("#varform")
-                if (appvari.length == 0) { form.innerHTML == "" } else {
+                form.innerHTML = ""
+                if (appvari.length == 0) { document.querySelector("#varh3").classList.add("invisible"); form.innerHTML == "" } else {
+                    document.querySelector("#varh3").classList.remove("invisible")
                     appvari.forEach(appvar => {
 // put every variable in display, dont forget to make non mandatory variables have a blank option
                         let inp = document.createElement("select")
+                        let label = document.createElement("label")
                         if (appvar.mandatory && !appvar["user-defined"]) {
                             for (value of Object.keys(appvar.values.values)) {
                                 let op = document.createElement("option")
@@ -113,12 +130,16 @@ button.addEventListener("click", async () => {
                                 op.innerHTML = `<option>${appvar.values.values[value].label}</option>`
                                 inp.appendChild(op)
                             }
+                            label.innerHTML = `${appvar.name}: `
+                            form.appendChild(document.createElement("p"))
+                            form.appendChild(label)
+                            form.appendChild(document.createElement("br"))
                             form.appendChild(inp)
                         }
                     })
                 }
             }
-            lvlc(lvls); varc(vari, lvls, cats)
+            lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		}
 		catch (e) {alert(`There was an error, please contact Bluestonex64. \n\n${e}`); button.disabled = false; throw e}
