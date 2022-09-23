@@ -115,46 +115,30 @@ button.addEventListener("click", async () => {
                     appvari.forEach(appvar => {
                         let inp = document.createElement("select")
                         let label = document.createElement("label")
-                        if (!appvar["user-defined"]) {
-                            if (!appvar.mandatory) {
-                                let op = document.createElement("option")
-                                op.value = null
-                                op.innerHTML = ` - `
-                                inp.appendChild(op)
-                            }
-                            for (value of Object.keys(appvar.values.values)) {
-                                let op = document.createElement("option")
-                                op.value = value
-                                op.innerHTML = `${appvar.values.values[value].label}`
-                                inp.appendChild(op)
-                            }
-                            label.innerHTML = `${appvar.name}: `
-                            form.appendChild(document.createElement("p"))
-                            form.appendChild(label)
-                            form.appendChild(document.createElement("br"))
-                            form.appendChild(inp)
-                        } else if (appvar["user-defined"]) {
-                            if (!appvar.mandatory) {
-                                let op = document.createElement("option")
-                                op.value = null
-                                op.innerHTML = ` - `
-                                inp.appendChild(op)
-                            }
+                        if (!appvar.mandatory) {
+                            let op = document.createElement("option")
+                            op.value = null
+                            op.innerHTML = ` - `
+                            inp.appendChild(op)
+                        }
+                        if (appvar["user-defined"]) {
                             let op = document.createElement("option")
                             op.value = 1
                             op.innerHTML = `Define`
                             inp.appendChild(op)
-                            for (value of Object.keys(appvar.values.values)) {
-                                let op = document.createElement("option")
-                                op.value = value
-                                op.innerHTML = `${appvar.values.values[value].label}`
-                                inp.appendChild(op)
-                            }
-                            label.innerHTML = `${appvar.name}: `
-                            form.appendChild(document.createElement("p"))
-                            form.appendChild(label)
-                            form.appendChild(document.createElement("br"))
-                            form.appendChild(inp)
+                        }
+                        for (value of Object.keys(appvar.values.values)) {
+                            let op = document.createElement("option")
+                            op.value = value
+                            op.innerHTML = `${appvar.values.values[value].label}`
+                            inp.appendChild(op)
+                        }
+                        label.innerHTML = `${appvar.name}: `
+                        form.appendChild(document.createElement("p"))
+                        form.appendChild(label)
+                        form.appendChild(document.createElement("br"))
+                        form.appendChild(inp)
+                        if (appvar["user-defined"]) {
                             let definedvar = document.createElement("input")
                             definedvar.id = "definedvar"
                             definedvar.type = "text"
@@ -175,8 +159,7 @@ button.addEventListener("click", async () => {
             }
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
-		}
-		catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}
+		} catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}
 	}
 	button.disabled = false
 })
