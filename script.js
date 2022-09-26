@@ -2,7 +2,27 @@ const key = document.querySelector("#key")
 const game = document.querySelector("#game")
 const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
+let platforms = []
+let POSTrun = async (key, run) => {
+    //http://localhost:3000/srcPOSTruns
+    let api = await fetch("https://blueapi.deno.dev/srcPOSTruns", {
+        method: "POST",
+        headers: {
+            "X-API-key": key,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(run)
+    })
+    return await api.json()
+}
 button.addEventListener("click", async () => {
+    if (platforms.length == 0) {
+        for (let offset = 0; offset < 50; offset++) {
+            let plats = await fetch(src + `platforms?max=200&offset=${offset*200}`).then(x => x.json())
+            platforms = platforms.concat(plats.data)
+            if (plats.data.length < 200) { break }
+        }
+    }
 	button.disabled = true
 	if (game.value != "") {
 		try {
