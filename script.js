@@ -130,8 +130,8 @@ button.addEventListener("click", async () => {
                 }
                 let form = document.querySelector("#varform")
                 form.innerHTML = ""
-                if (appvari.length == 0) { document.querySelector("#varh3").classList.add("invisible"); form.innerHTML == "" } else {
-                    document.querySelector("#varh3").classList.remove("invisible")
+                if (appvari.length == 0) { document.querySelector("#variables").classList.add("invisible"); form.innerHTML == "" } else {
+                    document.querySelector("#variables").classList.remove("invisible")
                     appvari.forEach(appvar => {
                         let inp = document.createElement("select")
                         let label = document.createElement("label")
@@ -176,6 +176,42 @@ button.addEventListener("click", async () => {
                         }
                     })
                 }   
+            }
+            let appplats = platforms.filter(platform => {
+                return r.data.platforms.includes(platform.id)
+            })
+            if (appplats.length == 0) { if (!document.querySelector("#platforms").classList.contains("invisible")) {document.querySelector("#platforms").classList.add("invisible")} } else {
+                let plath3 = document.querySelector("#plath3")
+                let pform = document.querySelector("#pform")
+                document.querySelector("#platforms").classList.remove("invisible") 
+                let sel = document.createElement("select")
+                pform.innerHTML = ""
+                for (plat of appplats) {
+                    let o = document.createElement("option")
+                    o.innerHTML = plat.name
+                    o.value = plat.id
+                    sel.appendChild(o)
+                }
+                pform.appendChild(document.createElement("p"))
+                let lbl = document.createElement("label")
+                if (r.data.ruleset["emulators-allowed"]) {
+                    lbl.innerHTML = "Choose the platform: ("
+                    let emulbl = document.createElement("label")
+                    emulbl.innerHTML = "Emulator )"
+                    let inp = document.createElement("input")
+                    inp.type = "checkbox"
+                    inp.id = "emulator"
+                    pform.appendChild(lbl)
+                    pform.appendChild(inp)
+                    pform.appendChild(emulbl)
+                    pform.appendChild(document.createElement("br"))
+                    pform.appendChild(sel)
+                } else {
+                    lbl.innerHTML = "Choose the platform:"
+                    pform.appendChild(lbl)
+                    pform.appendChild(document.createElement("br"))
+                    pform.appendChild(sel)
+                }
             }
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
