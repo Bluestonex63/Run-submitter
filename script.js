@@ -3,6 +3,11 @@ const game = document.querySelector("#game")
 const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
 let platforms = []
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
 let POSTrun = async (key, run) => {
     /*http://localhost:3000/srcPOSTruns*/
     let api = await fetch("https://blueapi.deno.dev/srcPOSTruns", {
@@ -213,7 +218,9 @@ button.addEventListener("click", async () => {
                     pform.appendChild(sel)
                 }
             }
+            document.getElementById('date').value = new Date().toDateInputValue();
             if (document.querySelector("#comment").classList.contains("invisible")) {document.querySelector("#comment").classList.remove("invisible")}
+            if (document.querySelector("#time").classList.contains("invisible")) {document.querySelector("#time").classList.remove("invisible")}
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		} catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}
