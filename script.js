@@ -4,7 +4,7 @@ const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
 let platforms = []
 let POSTrun = async (key, run) => {
-    //http://localhost:3000/srcPOSTruns
+    /*http://localhost:3000/srcPOSTruns*/
     let api = await fetch("https://blueapi.deno.dev/srcPOSTruns", {
         method: "POST",
         headers: {
@@ -213,6 +213,7 @@ button.addEventListener("click", async () => {
                     pform.appendChild(sel)
                 }
             }
+            if (document.querySelector("#comment").classList.contains("invisible")) {document.querySelector("#comment").classList.remove("invisible")}
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		} catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}

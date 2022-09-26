@@ -1,4 +1,4 @@
-select, #key, #game, #definedvar  {
+select, #key, #game, #definedvar, #splits, #commentarea  {
     width:80%;
     box-sizing:border-box;
     margin-top:10px;
@@ -6,7 +6,12 @@ select, #key, #game, #definedvar  {
     border: 1px;
     background-color: rgb(224, 220, 220);
 }
-#submission, #variables, #platforms, #key, #game {width: 25%}
+#submission, #variables, #key, #game, #platcom {width: 25%}
+#platforms {width:100%}
+#platcom {
+    display:flex;
+    flex-direction: column;
+}
 button {
     height: 30px;
     margin-top:10px;
@@ -44,4 +49,8 @@ button:disabled {
     margin-bottom: 0px;
     margin-top: 10px;
 }
-.invisible {display:none}
+.invisible {
+    display:none;
+    width:0px;
+    height:0px;
+}
