@@ -37,8 +37,8 @@
           <form id="cform">
             <h3>Comment & splits:</h3>
             <p></p>
-            <label>Input your splits here:</label> <br>
-            <input type="text" id="splits" placeholder="Optional">
+            <label>Input your splits i/o <strong>link</strong> here: (Optional)</label> <br>
+            <input type="url" id="splits" placeholder="https://splits.io/">
             <p></p>
             <label>Type your comment here:</label> <br>
             <textarea id="commentarea" placeholder="Optional"></textarea>
@@ -52,6 +52,49 @@
             <p></p>
             <label>Input the date of your run here:</label> <br>
             <input type="date" id="date">
+          </div>
+          <p></p>
+          <div id="timediv">
+            <h3>Time:</h3>
+            <div id="realtimemdiv">
+              <label>Realtime:</label><br>
+              <div id="realtime">
+                <input type="text" id="realtimehours" class="runtime">
+                <label class="timelbl">h</label>
+                <input type="text" id="realtimemins" class="runtime">
+                <label class="timelbl">m</label>
+                <input type="text" id="realtimesecs" class="runtime">
+                <label class="timelbl">s</label>
+                <input type="text" id="realtimems" class="runtime">
+                <label class="timelbl">ms</label>
+              </div>
+            </div>
+            <div id="realtime_noloadsmdiv">
+              <label>Realtime (no loads):</label><br>
+              <div id="realtime_noloads">
+                <input type="text" id="realtime_noloadshours" class="runtime">
+                <label class="timelbl">h </label>
+                <input type="text" id="realtime_noloadsemins" class="runtime">
+                <label class="timelbl">m </label>
+                <input type="text" id="realtime_noloadssecs" class="runtime">
+                <label class="timelbl">s </label>
+                <input type="text" id="realtime_noloadsms" class="runtime">
+                <label class="timelbl">ms</label>
+              </div>
+            </div>
+            <div id="igtmdiv">
+              <label>In game time:</label><br>
+              <div id="igt">
+                <input type="text" id="igthours" class="runtime">
+                <label class="timelbl">h </label>
+                <input type="text" id="igtemins" class="runtime">
+                <label class="timelbl">m </label>
+                <input type="text" id="igtsecs" class="runtime">
+                <label class="timelbl">s </label>
+                <input type="text" id="igtms" class="runtime">
+                <label class="timelbl">ms</label>
+              </div>
+            </div>
           </div>
         </form>
       </div>

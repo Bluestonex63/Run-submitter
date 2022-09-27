@@ -6,6 +6,28 @@ select, #key, #game, #definedvar, #splits, #commentarea, #date  {
     border: 1px;
     background-color: rgb(224, 220, 220);
 }
+.runtime {
+    width:13%;
+    height:15px;
+    border:0px;
+    background-color:rgba(255, 255, 255, 0.819); 
+    border-radius:10px
+}
+#realtimemdiv, #realtime_noloadsmdiv, #igtmdiv {
+    margin-top:10px;
+    margin-bottom:0px;
+    width:60%;
+}
+#realtime, #realtime_noloads, #igt {
+    display:flex;
+    padding:4px;
+    background-color:rgb(224, 220, 220); 
+    border-radius:10px
+}
+.timelbl {
+    margin-left: 4px;
+    margin-right: 6px;
+}
 #submission, #variables, #key, #game, #platcom, #time {width: 25%}
 #platforms {width:100%}
 #platcom {
