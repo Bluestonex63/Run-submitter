@@ -221,6 +221,18 @@ button.addEventListener("click", async () => {
             document.getElementById('date').value = new Date().toDateInputValue();
             if (document.querySelector("#comment").classList.contains("invisible")) {document.querySelector("#comment").classList.remove("invisible")}
             if (document.querySelector("#time").classList.contains("invisible")) {document.querySelector("#time").classList.remove("invisible")}
+            if (document.querySelector("#video").classList.contains("invisible")) {document.querySelector("#video").classList.remove("invisible")}
+            for (time of ["realtime", "realtime_noloads", "ingame"]) {
+                if (r.data.ruleset["run-times"].includes(time)) {
+                    if(document.querySelector("#" + time + "mdiv").classList.contains("invisible")) {
+                        document.querySelector("#" + time + "mdiv").classList.remove("invisible")
+                    }
+                } else {
+                    if(!document.querySelector("#" + time + "mdiv").classList.contains("invisible")) {
+                        document.querySelector("#" + time + "mdiv").classList.add("invisible")
+                    }
+                }
+            }
             lvlc(lvls, cats); varc(vari, lvls, cats)
             document.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls); varc(vari, lvls, cats)})
 		} catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}

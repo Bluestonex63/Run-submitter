@@ -1,4 +1,4 @@
-select, #key, #game, #definedvar, #splits, #commentarea, #date  {
+select, #key, #game, #definedvar, #splits, #commentarea, #date, #videolink  {
     width:80%;
     box-sizing:border-box;
     margin-top:10px;
@@ -13,10 +13,13 @@ select, #key, #game, #definedvar, #splits, #commentarea, #date  {
     background-color:rgba(255, 255, 255, 0.819); 
     border-radius:10px
 }
-#realtimemdiv, #realtime_noloadsmdiv, #igtmdiv {
+#splits:invalid {
+    background-color: rgb(250, 137, 137);
+}
+#realtimemdiv, #realtime_noloadsmdiv, #ingamemdiv {
     margin-top:10px;
     margin-bottom:0px;
-    width:60%;
+    width:70%;
 }
 #realtime, #realtime_noloads, #igt {
     display:flex;
@@ -28,7 +31,7 @@ select, #key, #game, #definedvar, #splits, #commentarea, #date  {
     margin-left: 4px;
     margin-right: 6px;
 }
-#submission, #variables, #key, #game, #platcom, #time {width: 25%}
+#catlvl, #variables, #key, #game, #platcom, #time {width: 25%}
 #platforms {width:100%}
 #platcom {
     display:flex;
@@ -67,7 +70,7 @@ button:disabled {
     display:flex;
     border-top: dotted gray 3px;
 }
-#catlb, #varh3, #plath3, #definedvar, #splits, #commentarea, #dateh3 {
+#catlb, #varh3, #plath3, #definedvar, #splits, #commentarea, #timeh3, #videoh3 {
     margin-bottom: 0px;
     margin-top: 10px;
 }
