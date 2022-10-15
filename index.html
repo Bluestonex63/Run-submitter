@@ -9,20 +9,29 @@
 </head>
 
 <body>
-    <h1>Run Submitter</h1>
-    <form>
-		<label>Api key:</label>
-        <br>
-		<input type="text" id="key" class="disableme">
-		<p></p>
-		<label>Game:</label>
-        <br>
-		<input type="text" id="game" class="disableme">
-	</form>
-	<p></p>
-	<button id="gameBtn">Get the levels and categories!</button>
-	<p></p>
-    <div id="masterdiv">
+  <h1>Run Submitter</h1>
+  <div style="display: flex; width:98%">
+    <div style="width:25%; margin-right:2%">
+      <form>
+        <label>Api key:</label><br>
+        <input type="text" id="key" class="disableme">
+        <p></p>
+        <label>Game:</label><br>
+        <input type="text" id="game" class="disableme">
+      </form>
+      <p></p>
+      <div style="display: flex;">
+        <button id="addarun" style="margin-right: 20px;">Add a run!</button>
+        <button id="gameBtn">Get the levels and categories!</button>
+      </div>
+    </div>
+<!--   <div style="border: 1px solid black">
+      Default
+    </div>--> 
+  </div>
+  <div id="runsdisplayer">
+    <fieldset class="masterdiv">
+      <legend><h2>Run 1</h2></legend>
       <div id="catlvl">
         <div id="submission"></div>
         <p></p>
@@ -109,7 +118,8 @@
           </div>
         </form>
       </div>
-    </div>
+    </fieldset>
+  </div>
   <script src="script.js"></script>
 </body>
 

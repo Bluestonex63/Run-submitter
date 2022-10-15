@@ -31,8 +31,8 @@ select, #key, #game, #definedvar, #splits, #commentarea, #date, #videolink  {
     margin-left: 4px;
     margin-right: 6px;
 }
-#catlvl, #variables, #key, #game, #platcom, #time {width: 25%}
-#platforms {width:100%}
+#catlvl, #variables, #platcom, #time {width: 25%}
+#platforms, #key, #game {width:100%}
 #platcom {
     display:flex;
     flex-direction: column;
@@ -66,9 +66,9 @@ button:disabled {
     background-color: rgb(234, 233, 233);
     font-weight: lighter;
 }
-#masterdiv {
+.masterdiv {
     display:flex;
-    border-top: dotted gray 3px;
+    border: dotted gray 3px;
 }
 #catlb, #varh3, #plath3, #definedvar, #splits, #commentarea, #timeh3, #videoh3 {
     margin-bottom: 0px;
