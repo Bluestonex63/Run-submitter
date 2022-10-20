@@ -1,4 +1,4 @@
-select, #key, #game, #definedvar, #splits, #commentarea, #date, #videolink  {
+select, #defaultvid, #key, #game, #definedvar, #splits, #commentarea, #date, #videolink  {
     width:80%;
     box-sizing:border-box;
     margin-top:10px;
@@ -27,12 +27,16 @@ select, #key, #game, #definedvar, #splits, #commentarea, #date, #videolink  {
     background-color:rgb(224, 220, 220); 
     border-radius:10px
 }
+.defaultdiv {
+    width: 24.5%; 
+    margin-right:0.5%
+}
 .timelbl {
     margin-left: 4px;
     margin-right: 6px;
 }
 #catlvl, #variables, #platcom, #time {width: 25%}
-#platforms, #key, #game {width:100%}
+#platforms, #key, #game, #defaultvid, #defaultlvl, #defaultcat {width:100%}
 #platcom {
     display:flex;
     flex-direction: column;
@@ -67,8 +71,14 @@ button:disabled {
     font-weight: lighter;
 }
 .masterdiv {
+    border: 15px solid transparent;
+/*    border: outset gray 3px;*/
+    border-image-source: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAFWbKW0x2wST2Rlehn__5ghgC5GrbhRw_lA&usqp=CAU);
+    border-image-repeat: repeat;
+    border-image-slice: 20;
+}
+.runwrapdiv {
     display:flex;
-    border: dotted gray 3px;
 }
 #catlb, #varh3, #plath3, #definedvar, #splits, #commentarea, #timeh3, #videoh3 {
     margin-bottom: 0px;
