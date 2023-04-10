@@ -25,18 +25,21 @@
         <button id="gameBtn">Get the levels and categories!</button>
       </div>
     </div>
-<!--  <div style="border: 1px solid black; width: 73%">
+    <div style="border: 1px solid black; width: 73%">
       <form>
         <div style="display:flex">
           <div class="defaultdiv">
             <div id="setlevel">
               <label>Set default category:</label><br>
-              <select id="defaultcat"></select>
+              <select id="defaultcat" multiple></select>
             </div>
             <p></p>
             <div id="setlvl">
-              <label>Set default level:</label> <label>(</label><input type="checkbox"><label>Progressive)</label> <br>
-              <select id="defaultlvl"></select>
+              <label>Set starting level:</label> <br>
+              <select id="defaultlvlst"></select>
+              <p></p>
+              <label>Set ending level:</label> <br>
+              <select id="defaultlvlen"></select>
             </div>
             <p></p>
             <div id="setvid">
@@ -47,16 +50,29 @@
           <div class="defaultdiv">test</div>
         </div>
       </form>
-    </div>--> 
+    </div>
   </div>
   <div id="runsdisplayer">
     <fieldset class="masterdiv">
       <legend>
         <div style="display:flex">
           <h2>Run 1</h2> 
-          <button id="retract" onclick="retract(event)" type="button" style="margin-left:5px; border:none; background:none; padding-top:15px;">-</button>
+          <button id="retract" onclick="retract(event)" style="margin-left:5px; border:none; background:none; padding-top:15px;">-</button>
         </div>
       </legend>
+      <div id="runinfo" class="invisible">
+        <span style="display:flex;">
+          <div id="catinfodiv" style="margin-right:30px;">
+            <strong>Category:</strong> 
+            <span id="catinfo"></span>  
+            <span id="varinfo"></span>
+          </div> 
+          <div id="lvlinfodiv">
+            <strong>Level:</strong> 
+            <span id="lvlinfo"></span>
+          </div>
+        </span>
+      </div>
       <div class="runwrapdiv">
         <div id="catlvl">
           <div id="submission"></div>

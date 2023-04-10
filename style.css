@@ -36,7 +36,7 @@ select, #defaultvid, #key, #game, #definedvar, #splits, #commentarea, #date, #vi
     margin-right: 6px;
 }
 #catlvl, #variables, #platcom, #time {width: 25%}
-#platforms, #key, #game, #defaultvid, #defaultlvl, #defaultcat {width:100%}
+#platforms, #key, #game, #defaultvid, #defaultlvlst, #defaultlvlen, #defaultcat {width:100%}
 #platcom {
     display:flex;
     flex-direction: column;
@@ -72,19 +72,29 @@ button:disabled {
 }
 .masterdiv {
     border: 15px solid transparent;
-/*    border: outset gray 3px;*/
-    border-image-source: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAFWbKW0x2wST2Rlehn__5ghgC5GrbhRw_lA&usqp=CAU);
+    border: solid black 3px;
+/*    border-image-source: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAFWbKW0x2wST2Rlehn__5ghgC5GrbhRw_lA&usqp=CAU);
     border-image-repeat: repeat;
-    border-image-slice: 20;
+    border-image-slice: 20;*/
 }
+/*.test {backrgound: rgb(207, 207, 207)}*/
 .runwrapdiv {
     display:flex;
 }
-#catlb, #varh3, #plath3, #definedvar, #splits, #commentarea, #timeh3, #videoh3 {
+#definedvar, #splits, #commentarea, #videoh3 {
     margin-bottom: 0px;
     margin-top: 10px;
 }
+#catlb, #varh3, #plath3, #timeh3 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
 .invisible {
+    display:none;
+    width:0px;
+    height:0px;
+}
+.runinvisible {
     display:none;
     width:0px;
     height:0px;

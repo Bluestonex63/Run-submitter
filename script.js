@@ -2,12 +2,27 @@ const key = document.querySelector("#key")
 const game = document.querySelector("#game")
 const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
+let sel = []
 let platforms = []
 Date.prototype.toDateInputValue = (function() {
     var local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
     return local.toJSON().slice(0,10);
 });
+function getSelectValues(select) {
+    var result = [];
+    var options = select && select.options;
+    var opt;
+  
+    for (var i=0, iLen=options.length; i<iLen; i++) {
+      opt = options[i];
+  
+      if (opt.selected) {
+        result.push(opt.value || opt.text);
+      }
+    }
+    return result;
+}
 let POSTrun = async (key, run) => {
     /*http://localhost:3000/srcPOSTruns*/
     let api = await fetch("https://blueapi.deno.dev/srcPOSTruns", {
@@ -54,9 +69,14 @@ let lvlc = (lvls, cats, masterdiv) => {
             form.appendChild(lvlsel)
             masterdiv.querySelector("#submission").innerHTML = ""
             masterdiv.querySelector("#submission").appendChild(form)
-            lvlsel.addEventListener("change", () => {varc(vari, lvls, cats)})
+            lvlsel.addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})
         } else {
             const catsel = masterdiv.querySelector("#catsel")
+            catsel.addEventListener("change", () => {
+                lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
+                try {masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
+                catch {}
+            })
             masterdiv.querySelector("#submissionform").innerHTML = ""
             let catlb = document.createElement("label")
             let cath3 = document.createElement("h3")
@@ -100,6 +120,7 @@ let varc = (vari, lvls, cats, masterdiv) => {
         masterdiv.querySelector("#variables").classList.remove("invisible")
         appvari.forEach(appvar => {
             let inp = document.createElement("select")
+            inp.classList.add("variableselector")
             let label = document.createElement("label")
             if (!appvar.mandatory) {
                 let op = document.createElement("option")
@@ -239,9 +260,15 @@ button.addEventListener("click", async function() {
             }
         }
         lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
-        masterdiv.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)})
+        masterdiv.querySelector("#catsel").addEventListener("change", () => {
+            lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
+            try {masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
+            catch {}
+        })
+        try {masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
+        catch {}
     }
-/*    document.querySelector("#defaultcat").innerHTML = ""
+    document.querySelector("#defaultcat").innerHTML = ""
     let opt = document.createElement("option");
     document.querySelector("#defaultcat").appendChild(opt)
     cats.forEach(cat => {
@@ -256,40 +283,76 @@ button.addEventListener("click", async function() {
     })
     let lvlup = (cats, lvls) => {
         let catselv = document.querySelector("#defaultcat").value
-        let lvlselv = document.querySelector("#defaultlvl")
-        lvlselv.innerHTML = ""
-        let isIL = cats.some(cat => (catselv == cat.id && cat.type == "per-level") || catselv == "")
-        if (lvls.length != 0 && isIL) {   
-            lvls.forEach(lvl => {
-                let opt = document.createElement("option");
-                opt.innerHTML = `${lvl["name"]}`
-                lvlselv.appendChild(opt)
-            })
-            if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
-        } else {
-            if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
+        let lvlselvst = document.querySelector("#defaultlvlst")
+        let lvlselven = document.querySelector("#defaultlvlen")
+        for (lvlselv of [lvlselvst, lvlselven]) {
+            lvlselv.innerHTML = ""
+            let isIL = cats.some(cat => (catselv == cat.id && cat.type == "per-level") || catselv == "")
+            if (lvls.length != 0 && isIL) {   
+                lvls.forEach(lvl => {
+                    let opt = document.createElement("option");
+                    opt.innerHTML = `${lvl["name"]}`
+                    lvlselv.appendChild(opt)
+                })
+                if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
+            } else {
+                if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
+            }
         }
     }
     lvlup(cats, lvls)
-    document.querySelector("#defaultcat").addEventListener("change", () => {lvlup(cats, lvls)})*/
+    document.querySelector("#defaultcat").addEventListener("change", () => {lvlup(cats, lvls)})
     button.disabled = false
 })
 
 document.querySelector("#addarun").addEventListener("click", () => {
     let run2 = document.querySelectorAll(".masterdiv")[0]
     run2 = run2.cloneNode(true)
+    if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
     run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
-    run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
-    document.querySelectorAll(".masterdiv")[document.querySelectorAll(".masterdiv").length-1].parentElement.appendChild(run2)
+    if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+    try {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2); run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})}
+    finally {document.querySelectorAll(".masterdiv")[document.querySelectorAll(".masterdiv").length-1].parentElement.appendChild(run2)}
 })
 
 let retract = (e) => {
     let fset = e.target.parentElement.parentElement.parentElement
-    if (fset.querySelector(".runwrapdiv").classList.contains("invisible")) {
-        fset.querySelector(".runwrapdiv").classList.remove("invisible")
+    if (fset.querySelector(".runwrapdiv").classList.contains("runinvisible")) {
+        fset.querySelector(".runwrapdiv").classList.remove("runinvisible")
+        fset.querySelector("#runinfo").classList.add("invisible")
         e.target.innerHTML = "-"
     } else {
-        fset.querySelector(".runwrapdiv").classList.add("invisible")
+        fset.querySelector(".runwrapdiv").classList.add("runinvisible")
+        fset.querySelector("#runinfo").classList.remove("invisible")
         e.target.innerHTML = "+"
     }
+    // ADD VARIABLES AND MAKE IT PRETTY
+    for (opt of fset.querySelector("#catsel").options) {if (opt.value == fset.querySelector("#catsel").value) {fset.querySelector("#catinfo").innerHTML = opt.text}}
+    if (fset.querySelectorAll(".variableselector").length == 0) {fset.querySelector("#varinfo").innerHTML = ""}
+    for (variable of fset.querySelectorAll(".variableselector")) {
+        for (opt of variable) {
+            if (opt.value == variable.value) {
+                if (fset.querySelectorAll(".variableselector").length > 1) {
+                    if (Array.from(fset.querySelectorAll(".variableselector")).indexOf(variable) == 0) {
+                        fset.querySelector("#varinfo").innerHTML = "(" + opt.text + ", "
+                    } else if (Array.from(fset.querySelectorAll(".variableselector")).indexOf(variable) == fset.querySelectorAll(".variableselector").length-1) {
+                        fset.querySelector("#varinfo").innerHTML += opt.text + ")"
+                    } else {
+                        fset.querySelector("#varinfo").innerHTML += opt.text + ", "
+                    }
+                } else {
+                    fset.querySelector("#varinfo").innerHTML = "(" + opt.text + ")"
+                }
+                break
+            }
+        }
+    }
+    try {fset.querySelector("#lvlinfo").innerHTML = fset.querySelector("#lvlsel").value; if (fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.remove("invisible")}}
+    catch {if (!fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.add("invisible")}}
 }
+
+document.querySelector("#defaultcat").addEventListener("change", (e) => {
+    for (v of getSelectValues(e.target)) {
+        //console.log(Array.from(e.target).find(val => v == val.value).text)
+    }
+})
