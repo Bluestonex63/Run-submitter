@@ -35,6 +35,13 @@ let POSTrun = async (key, run) => {
     })
     return await api.json()
 }
+document.querySelector("#delete").addEventListener("click", (e) => {
+    if (document.querySelectorAll(".masterdiv").length != 1) {
+        e.target.parentElement.parentElement.parentElement.remove()
+    } else {
+        alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+    }
+})
 let lvlc = (lvls, cats, masterdiv) => {
     let form = masterdiv.querySelector("#submissionform")
     let catselv = masterdiv.querySelector("#catsel").value
@@ -310,6 +317,18 @@ document.querySelector("#addarun").addEventListener("click", () => {
     run2 = run2.cloneNode(true)
     if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
     run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+    if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+        run2.querySelector("#retractdiv").style.width = "115px"
+    } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+        run2.querySelector("#retractdiv").style.width = "100px"
+    }
+    run2.querySelector("#delete").addEventListener("click", (e) => {
+        if (document.querySelectorAll(".masterdiv").length != 1) {
+            e.target.parentElement.parentElement.parentElement.remove()
+        } else {
+            alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+        }
+    })
     if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
     try {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2); run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})}
     finally {document.querySelectorAll(".masterdiv")[document.querySelectorAll(".masterdiv").length-1].parentElement.appendChild(run2)}

@@ -53,11 +53,15 @@
     </div>
   </div>
   <div id="runsdisplayer">
-    <fieldset class="masterdiv">
-      <legend>
-        <div style="display:flex">
+    <fieldset class="masterdiv" style="border: 1.5px black solid">
+      <legend style="display: flex; width:95%">
+        <div id="retractdiv" style="display:flex; align-items: center; width: 85px">
           <h2>Run 1</h2> 
-          <button id="retract" onclick="retract(event)" style="margin-left:5px; border:none; background:none; padding-top:15px;">-</button>
+          <button id="retract" onclick="retract(event)" style="background-color: white; border: none; margin: 0;">-</button>
+        </div>
+        <div style="width: 90%; height:100%; margin-top: auto; margin-bottom: auto; border:0.75px black solid;"></div>
+        <div id="delete" style="float:right; height:100%; margin:auto; ">
+          <img src="x.png" alt="x" id="delete" style="width: 20px"/>
         </div>
       </legend>
       <div id="runinfo" class="invisible">
