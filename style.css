@@ -70,14 +70,6 @@ button:disabled {
     background-color: rgb(234, 233, 233);
     font-weight: lighter;
 }
-/* .masterdiv {
-   border: 15px solid transparent;
-    border: solid black 3px;
-    border-image-source: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAFWbKW0x2wST2Rlehn__5ghgC5GrbhRw_lA&usqp=CAU);
-    border-image-repeat: repeat;
-    border-image-slice: 20;
-}*/
-/*.test {backrgound: rgb(207, 207, 207)}*/
 .runwrapdiv {
     display:flex;
 }
