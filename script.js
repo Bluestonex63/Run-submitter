@@ -154,10 +154,6 @@ let varc = (vari, lvls, cats, masterdiv) => {
             form.appendChild(document.createElement("br"))
             form.appendChild(inp)
             if (appvar["user-defined"]) {
-                let definedvar = document.createElement("input")
-                definedvar.id = "definedvar"
-                definedvar.type = "text"
-                form.appendChild(definedvar)
                 inp.addEventListener("change", () => {
                     if (masterdiv.querySelector("#definedvar") == null && inp.value == 1) {
                         let definedvar = document.createElement("input")
@@ -268,27 +264,58 @@ button.addEventListener("click", async function() {
             }
         }
         masterdiv.querySelector('#date').value = new Date().toDateInputValue();
+        document.querySelector('#defdate').value = new Date().toDateInputValue();
         if (masterdiv.querySelector("#comment").classList.contains("invisible")) {masterdiv.querySelector("#comment").classList.remove("invisible")}
         if (masterdiv.querySelector("#time").classList.contains("invisible")) {masterdiv.querySelector("#time").classList.remove("invisible")}
         if (masterdiv.querySelector("#video").classList.contains("invisible")) {masterdiv.querySelector("#video").classList.remove("invisible")}
+        if (r.data.ruleset["show-milliseconds"]) {
+            for (time of ["realtime", "realtime_noloads", "ingame"]) {
+                masterdiv.querySelector("#" + time + "ms").disabled = false
+                document.querySelector("#def" + time + "ms").disabled = false
+            }
+        } else {
+            for (time of ["realtime", "realtime_noloads", "ingame"]) {
+                masterdiv.querySelector("#" + time + "ms").disabled = true
+                masterdiv.querySelector("#" + time + "ms").value = ""
+                document.querySelector("#def" + time + "ms").disabled = true
+                document.querySelector("#def" + time + "ms").value = ""
+            }
+        }
         for (time of ["realtime", "realtime_noloads", "ingame"]) {
             if (r.data.ruleset["run-times"].includes(time)) {
                 if(masterdiv.querySelector("#" + time + "mdiv").classList.contains("invisible")) {
                     masterdiv.querySelector("#" + time + "mdiv").classList.remove("invisible")
                 }
+                if(document.querySelector("#def" + time + "mdiv").classList.contains("invisible")) {
+                    document.querySelector("#def" + time + "mdiv").classList.remove("invisible")
+                }
             } else {
                 if(!masterdiv.querySelector("#" + time + "mdiv").classList.contains("invisible")) {
                     masterdiv.querySelector("#" + time + "mdiv").classList.add("invisible")
                 }
+                if(!document.querySelector("#def" + time + "mdiv").classList.contains("invisible")) {
+                    document.querySelector("#def" + time + "mdiv").classList.add("invisible")
+                }
             }
         }
         lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
+        let old_element = masterdiv.querySelector("#catsel");
+        let new_element = old_element.cloneNode(true);
+        old_element.parentNode.replaceChild(new_element, old_element);
         masterdiv.querySelector("#catsel").addEventListener("change", () => {
             lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
-            try {masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
+            try {
+                let old_element = masterdiv.querySelector("#lvlsel");
+                let new_element = old_element.cloneNode(true);
+                old_element.parentNode.replaceChild(new_element, old_element);
+                masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
             catch {}
         })
-        try {masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
+        try {
+            let old_element = masterdiv.querySelector("#lvlsel");
+            let new_element = old_element.cloneNode(true);
+            old_element.parentNode.replaceChild(new_element, old_element);
+            masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
         catch {}
     }
     document.querySelector("#defaultcat").innerHTML = ""
@@ -303,23 +330,123 @@ button.addEventListener("click", async function() {
         document.querySelector("#defaultcat").appendChild(opt)
     })
     let lvlup = (cats, lvls) => {
-        let catselv = document.querySelector("#defaultcat").value
+        let catselv = document.querySelector("#defaultcat")
         let lvlselv = document.querySelector("#defaultlvl")
         lvlselv.innerHTML = ""
-        let isIL = cats.some(cat => (catselv == cat.id && cat.type == "per-level") || catselv == "")
-        if (lvls.length != 0 && isIL) {   
-            lvls.forEach(lvl => {
-                let opt = document.createElement("option");
-                opt.innerHTML = `${lvl["name"]}`
-                lvlselv.appendChild(opt)
-            })
-            if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
+        let isIL = getSelectValues(catselv).find(val => Array.from(catselv).map(a => a.value).includes(val)) //.text.split(" - ")[1] == "IL"
+        if (isIL != undefined) {  
+            if (Array.from(catselv).find(val => val.value == isIL).text.split(" - ")[1] == "IL") {
+                lvls.forEach(lvl => {
+                    let opt = document.createElement("option");
+                    opt.innerHTML = `${lvl["name"]}`
+                    lvlselv.appendChild(opt)
+                })
+                if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
+            } else {
+                if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
+            }
         } else {
             if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
         }
     }
-    lvlup(cats, lvls)
-    document.querySelector("#defaultcat").addEventListener("change", () => {lvlup(cats, lvls)})
+    let varup = (vari, cats, lvls) => {
+        let catselv = document.querySelector("#defaultcat")
+        let lvlselv = document.querySelector("#defaultlvl")
+        let appvari = []
+        if (lvlselv.parentElement.classList.contains("invisible")) {
+            appvari = vari.filter(variable => { 
+                if (variable.category != null) {
+                    return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                } else {
+                    return variable.scope.type == "full-game" || variable.scope.type == "global"
+                }
+            })
+        } else {
+            appvari = vari.filter(variable => { 
+                if (variable.category != null && variable.scope.type != "single-level" ) {
+                    return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                } else if (variable.scope.type == "single-level" && variable.category != null) {
+                    return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id) && getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                } else {
+                    return variable.scope.type == "all-levels" || variable.scope.type == "global"
+                }
+            })
+        }
+        let form = document.querySelector("#defvariables")
+        form.innerHTML = ""
+        if (appvari.length == 0) { form.parentElement.classList.add("invisible"); form.innerHTML == "" } else {
+            form.parentElement.classList.remove("invisible")
+            appvari.forEach(appvar => {
+                let inp = document.createElement("select")
+                inp.classList.add("variableselector")
+                let label = document.createElement("label")
+                if (!appvar.mandatory) {
+                    let op = document.createElement("option")
+                    op.value = null
+                    op.innerHTML = ` - `
+                    inp.appendChild(op)
+                }
+                if (appvar["user-defined"]) {
+                    let op = document.createElement("option")
+                    op.value = 1
+                    op.innerHTML = `Define`
+                    inp.appendChild(op)
+                }
+                for (value of Object.keys(appvar.values.values)) {
+                    let op = document.createElement("option")
+                    op.value = value
+                    op.innerHTML = `${appvar.values.values[value].label}`
+                    inp.appendChild(op)
+                }
+                label.innerHTML = `${appvar.name}: `
+                form.appendChild(document.createElement("p"))
+                form.appendChild(label)
+                form.appendChild(document.createElement("br"))
+                form.appendChild(inp)
+                if (appvar["user-defined"]) {
+                    inp.addEventListener("change", () => {
+                        if (document.querySelector("#defdefinedvar") == null && inp.value == 1) {
+                            let definedvar = document.createElement("input")
+                            definedvar.id = "defdefinedvar"
+                            definedvar.type = "text"
+                            form.appendChild(definedvar)
+                        } else if (document.querySelector("#defdefinedvar") != null && inp.value != 1) {
+                            form.removeChild(document.querySelector("#defdefinedvar"))
+                        } 
+                    })
+                }
+            })
+        }   
+    }
+    lvlup(cats, lvls); 
+    varup(vari, cats, lvls)
+    let old_element = document.querySelector("#defaultcat");
+    let new_element = old_element.cloneNode(true);
+    old_element.parentNode.replaceChild(new_element, old_element);
+    document.querySelector("#defaultcat").addEventListener("change", (e) => {
+        if(getSelectValues(e.target).some(v => {
+            if(Array.from(e.target).find(val => v == val.value).text.split(" - ")[1] == "IL") {
+                if(getSelectValues(e.target).some(va => {return Array.from(e.target).find(val => va == val.value).text.split(" - ")[1] == "FG"})) {return true}
+            }
+        })) {
+            try {
+                for (scope of ["IL", "FG"]) {
+                    if (Array.from(e.target).find(val => val.value == getSelectValues(e.target).find(v => {
+                        if (!sellist.includes(v)) {return v}
+                    })).text.split(" - ")[1] == scope) {
+                        for (v of getSelectValues(e.target)) {
+                            if (Array.from(e.target).find(val => val.value == v).text.split(" - ")[1] == scope) {
+                                Array.from(e.target).find(val => val.value == v).selected = false
+                            }
+                        }
+                    }
+                }
+            } 
+            catch {}
+        }
+        sellist = getSelectValues(e.target)  
+    })
+    document.querySelector("#defaultcat").addEventListener("change", () => {lvlup(cats, lvls); varup(vari, cats, lvls)})
     button.disabled = false
 })
 
@@ -381,27 +508,3 @@ let retract = (e) => {
     catch {if (!fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.add("invisible")}}
 }
 
-document.querySelector("#defaultcat").addEventListener("change", (e) => {
-    if(getSelectValues(e.target).some(v => {
-        if(Array.from(e.target).find(val => v == val.value).text.split(" - ")[1] == "IL") {
-            if(getSelectValues(e.target).some(va => {return Array.from(e.target).find(val => va == val.value).text.split(" - ")[1] == "FG"})) {return true}
-        }
-    })) {
-        try {
-            for (scope of ["IL", "FG"]) {
-                if (Array.from(e.target).find(val => val.value == getSelectValues(e.target).find(v => {
-                    if (!sellist.includes(v)) {return v}
-                })).text.split(" - ")[1] == scope) {
-                    for (v of getSelectValues(e.target)) {
-                        if (Array.from(e.target).find(val => val.value == v).text.split(" - ")[1] == scope) {
-                            Array.from(e.target).find(val => val.value == v).selected = false
-                        }
-                    }
-                }
-            }
-        } 
-        catch {}
-    }
-    sellist = getSelectValues(e.target)
-    
-})
