@@ -4,6 +4,7 @@ const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
 let sel = []
 let platforms = []
+let sellist = []
 Date.prototype.toDateInputValue = (function() {
     var local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
@@ -291,8 +292,6 @@ button.addEventListener("click", async function() {
         catch {}
     }
     document.querySelector("#defaultcat").innerHTML = ""
-    let opt = document.createElement("option");
-    document.querySelector("#defaultcat").appendChild(opt)
     cats.forEach(cat => {
         let opt = document.createElement("option");
         if (cat["type"] == "per-game") {
@@ -383,7 +382,26 @@ let retract = (e) => {
 }
 
 document.querySelector("#defaultcat").addEventListener("change", (e) => {
-    for (v of getSelectValues(e.target)) {
-        //console.log(Array.from(e.target).find(val => v == val.value).text)
+    if(getSelectValues(e.target).some(v => {
+        if(Array.from(e.target).find(val => v == val.value).text.split(" - ")[1] == "IL") {
+            if(getSelectValues(e.target).some(va => {return Array.from(e.target).find(val => va == val.value).text.split(" - ")[1] == "FG"})) {return true}
+        }
+    })) {
+        try {
+            for (scope of ["IL", "FG"]) {
+                if (Array.from(e.target).find(val => val.value == getSelectValues(e.target).find(v => {
+                    if (!sellist.includes(v)) {return v}
+                })).text.split(" - ")[1] == scope) {
+                    for (v of getSelectValues(e.target)) {
+                        if (Array.from(e.target).find(val => val.value == v).text.split(" - ")[1] == scope) {
+                            Array.from(e.target).find(val => val.value == v).selected = false
+                        }
+                    }
+                }
+            }
+        } 
+        catch {}
     }
+    sellist = getSelectValues(e.target)
+    
 })
