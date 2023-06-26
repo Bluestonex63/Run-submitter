@@ -35,11 +35,8 @@
             </div>
             <p></p>
             <div id="setlvl">
-              <label>Set starting level:</label> <br>
-              <select id="defaultlvlst"></select>
-              <p></p>
-              <label>Set ending level:</label> <br>
-              <select id="defaultlvlen"></select>
+              <label>Set the levels:</label> <br>
+              <select id="defaultlvl" multiple></select>
             </div>
             <p></p>
             <div id="setvid">
@@ -47,7 +44,21 @@
               <input type="url" id="defaultvid" placeholder="https://www.youtube.com/"></input>
             </div>
           </div>
-          <div class="defaultdiv">test</div>
+          <div class="defaultdiv">
+            <div id="choices">
+              <label><strong>Generate runs:</strong></label><br>
+                <input type="radio" name="runsgen" checked>Categories cycle through levels<br>
+                <input type="radio" name="runsgen">Levels cycle through categories<p></p>
+              <label><strong>Select levels:</strong></label><br>
+                <input type="radio" name="levelssel" checked>Manually<br>
+                <input type="radio" name="levelssel">Start and end levels only
+            </div>
+            <p></p>
+            <div id="default_platform">
+              <label><strong>Set the default platform:</strong></label>
+              <select></select>
+            </div>
+          </div>
         </div>
       </form>
     </div>

@@ -221,6 +221,8 @@ button.addEventListener("click", async function() {
         if (appplats.length == 0) { if (!masterdiv.querySelector("#platforms").classList.contains("invisible")) {masterdiv.querySelector("#platforms").classList.add("invisible")} } else {
             let plath3 = masterdiv.querySelector("#plath3")
             let pform = masterdiv.querySelector("#pform")
+            let defplatform = document.querySelector("#default_platform")
+            defplatform.innerHTML = ""
             masterdiv.querySelector("#platforms").classList.remove("invisible") 
             let sel = document.createElement("select")
             pform.innerHTML = ""
@@ -232,23 +234,36 @@ button.addEventListener("click", async function() {
             }
             pform.appendChild(document.createElement("p"))
             let lbl = document.createElement("label")
+            let lbldef = document.createElement("label")
             if (r.data.ruleset["emulators-allowed"]) {
                 lbl.innerHTML = "Choose the platform: ("
+                lbldef.innerHTML = "<strong>Set the default platform:</strong>"
                 let emulbl = document.createElement("label")
+                let emulbldef = document.createElement("label")
                 emulbl.innerHTML = "Emulator )"
+                emulbldef.innerHTML = "(<input type='checkbox' id='defemulator'>Emulator)"
                 let inp = document.createElement("input")
                 inp.type = "checkbox"
                 inp.id = "emulator"
-                pform.appendChild(lbl)
-                pform.appendChild(inp)
-                pform.appendChild(emulbl)
-                pform.appendChild(document.createElement("br"))
-                pform.appendChild(sel)
+                defplatform.appendChild(lbldef)
+                defplatform.appendChild(document.createElement("br"))
+                defplatform.appendChild(emulbldef)
+                defplatform.appendChild(document.createElement("br"))
+                defplatform.appendChild(sel)
+                pform.appendChild(lbl.cloneNode(true));
+                pform.appendChild(inp.cloneNode(true));
+                pform.appendChild(emulbl.cloneNode(true));
+                pform.appendChild(document.createElement("br"));
+                pform.appendChild(sel.cloneNode(true));
             } else {
                 lbl.innerHTML = "Choose the platform:"
-                pform.appendChild(lbl)
-                pform.appendChild(document.createElement("br"))
-                pform.appendChild(sel)
+                lbldef.innerHTML = "<strong>Set the default platform:</strong>"
+                defplatform.appendChild(lbldef)
+                defplatform.appendChild(document.createElement("br"))
+                defplatform.appendChild(sel)
+                pform.appendChild(lbl.cloneNode(true));
+                pform.appendChild(document.createElement("br"));
+                pform.appendChild(sel.cloneNode(true));
             }
         }
         masterdiv.querySelector('#date').value = new Date().toDateInputValue();
@@ -290,21 +305,18 @@ button.addEventListener("click", async function() {
     })
     let lvlup = (cats, lvls) => {
         let catselv = document.querySelector("#defaultcat").value
-        let lvlselvst = document.querySelector("#defaultlvlst")
-        let lvlselven = document.querySelector("#defaultlvlen")
-        for (lvlselv of [lvlselvst, lvlselven]) {
-            lvlselv.innerHTML = ""
-            let isIL = cats.some(cat => (catselv == cat.id && cat.type == "per-level") || catselv == "")
-            if (lvls.length != 0 && isIL) {   
-                lvls.forEach(lvl => {
-                    let opt = document.createElement("option");
-                    opt.innerHTML = `${lvl["name"]}`
-                    lvlselv.appendChild(opt)
-                })
-                if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
-            } else {
-                if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
-            }
+        let lvlselv = document.querySelector("#defaultlvl")
+        lvlselv.innerHTML = ""
+        let isIL = cats.some(cat => (catselv == cat.id && cat.type == "per-level") || catselv == "")
+        if (lvls.length != 0 && isIL) {   
+            lvls.forEach(lvl => {
+                let opt = document.createElement("option");
+                opt.innerHTML = `${lvl["name"]}`
+                lvlselv.appendChild(opt)
+            })
+            if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
+        } else {
+            if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
         }
     }
     lvlup(cats, lvls)

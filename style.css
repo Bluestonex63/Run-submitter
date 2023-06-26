@@ -6,15 +6,6 @@ select, #defaultvid, #key, #game, #definedvar, #splits, #commentarea, #date, #vi
     border: 1px;
     background-color: rgb(224, 220, 220);
 }
-  /*.legend-left::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: calc(50% - 100px); /* Adjust the thickness of the line
-    height: 100%;
-    width: 80%;
-    background-color: #000000; /* Adjust the color of the line 
-  }*/
 .runtime {
     width:13%;
     height:15px;
