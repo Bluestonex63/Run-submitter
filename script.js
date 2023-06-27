@@ -57,6 +57,7 @@ let lvlc = (lvls, cats, masterdiv) => {
             lvls.forEach(lvl => {
                 let opt = document.createElement("option");
                 opt.innerHTML = `${lvl["name"]}`
+                opt.value = `${lvl["id"]}`
                 lvlsel.appendChild(opt)
             })
             const catsel = masterdiv.querySelector("#catsel")
@@ -116,7 +117,9 @@ let varc = (vari, lvls, cats, masterdiv) => {
             if (variable.category != null && variable.scope.type != "single-level" ) {
                 return cats.find(cat => variable.category == cat.id).id == catselv
             } else if (variable.scope.type == "single-level" && variable.category != null) {
-                return lvls.find(level => level.id == variable.scope.level).name == lvlsel.value && cats.find(cat => variable.category == cat.id).id == catselv
+                return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value && cats.find(cat => variable.category == cat.id).id == catselv
+            } else if (variable.scope.type == "single-level" && variable.category == null) {
+                return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value
             } else {
                 return variable.scope.type == "all-levels" || variable.scope.type == "global"
             }
@@ -305,15 +308,19 @@ button.addEventListener("click", async function() {
         masterdiv.querySelector("#catsel").addEventListener("change", () => {
             lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
             try {
+                let sellvl = masterdiv.querySelector("#lvlsel").options[masterdiv.querySelector("#lvlsel").selectedIndex]
                 let old_element = masterdiv.querySelector("#lvlsel");
                 let new_element = old_element.cloneNode(true);
                 old_element.parentNode.replaceChild(new_element, old_element);
+                Array.from(new_element.options).find(option => option.value == sellvl.value).selected = true
                 masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
             catch {}
         })
         try {
+            let sellvl = masterdiv.querySelector("#lvlsel").options[masterdiv.querySelector("#lvlsel").selectedIndex]
             let old_element = masterdiv.querySelector("#lvlsel");
             let new_element = old_element.cloneNode(true);
+            Array.from(new_element.options).find(option => option.value == sellvl.value).selected = true
             old_element.parentNode.replaceChild(new_element, old_element);
             masterdiv.querySelector("#lvlsel").addEventListener("change", () => {varc(vari, lvls, cats, masterdiv)})}
         catch {}
@@ -332,6 +339,7 @@ button.addEventListener("click", async function() {
     let lvlup = (cats, lvls) => {
         let catselv = document.querySelector("#defaultcat")
         let lvlselv = document.querySelector("#defaultlvl")
+        let sellvls = getSelectValues(lvlselv)
         lvlselv.innerHTML = ""
         let isIL = getSelectValues(catselv).find(val => Array.from(catselv).map(a => a.value).includes(val)) //.text.split(" - ")[1] == "IL"
         if (isIL != undefined) {  
@@ -339,8 +347,12 @@ button.addEventListener("click", async function() {
                 lvls.forEach(lvl => {
                     let opt = document.createElement("option");
                     opt.innerHTML = `${lvl["name"]}`
+                    opt.value = `${lvl["id"]}`
                     lvlselv.appendChild(opt)
                 })
+                for (sellvl of sellvls) {
+                    Array.from(lvlselv).find(a => a.value == sellvl).selected = true
+                }
                 if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
             } else {
                 if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
@@ -367,6 +379,8 @@ button.addEventListener("click", async function() {
                     return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
                 } else if (variable.scope.type == "single-level" && variable.category != null) {
                     return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id) && getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                } else if (variable.scope.type == "single-level" && variable.category == null) {
+                    return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id)
                 } else {
                     return variable.scope.type == "all-levels" || variable.scope.type == "global"
                 }
@@ -447,6 +461,10 @@ button.addEventListener("click", async function() {
         sellist = getSelectValues(e.target)  
     })
     document.querySelector("#defaultcat").addEventListener("change", () => {lvlup(cats, lvls); varup(vari, cats, lvls)})
+    let old_element2 = document.querySelector("#defaultlvl");
+    let new_element2 = old_element2.cloneNode(true);
+    old_element2.parentNode.replaceChild(new_element2, old_element2);
+    document.querySelector("#defaultlvl").addEventListener("change", () => {varup(vari, cats, lvls)})
     button.disabled = false
 })
 
