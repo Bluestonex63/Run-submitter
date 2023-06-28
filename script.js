@@ -4,6 +4,7 @@ const button = document.querySelector("#gameBtn")
 const src = "https://www.speedrun.com/api/v1/"
 let sel = []
 let platforms = []
+let regions = []
 let sellist = []
 let ge = false
 Date.prototype.toDateInputValue = (function() {
@@ -174,6 +175,8 @@ let varc = (vari, lvls, cats, masterdiv) => {
     }   
 }
 button.addEventListener("click", async function() {
+    document.querySelector("#submit").disabled = true
+    document.querySelector("#generate").disabled = true
     if (platforms.length == 0) {
         for (let offset = 0; offset < 50; offset++) {
             let plats = await fetch(src + `platforms?max=200&offset=${offset*200}`).then(x => x.json())
@@ -181,8 +184,13 @@ button.addEventListener("click", async function() {
             if (plats.data.length < 200) { break }
         }
     }
-    document.querySelector("#submit").disabled = true
-    document.querySelector("#generate").disabled = true
+    if (regions.length == 0) {
+        for (let offset = 0; offset < 50; offset++) {
+            let reg = await fetch(src + `regions?max=200&offset=${offset*200}`).then(x => x.json())
+            regions = regions.concat(reg.data)
+            if (reg.data.length < 200) { break }
+        }
+    }
     button.disabled = true
     let r = {}
         lvls = {}
@@ -286,6 +294,39 @@ button.addEventListener("click", async function() {
                 masterdiv.querySelector("#" + time + "ms").value = ""
                 document.querySelector("#def" + time + "ms").disabled = true
                 document.querySelector("#def" + time + "ms").value = ""
+            }
+        }
+        masterdiv.querySelector("#regionsel").innerHTML = ""
+        document.querySelector("#defregionsel").innerHTML = ""
+        if (r.data["regions"].length == 0) {
+            if (!masterdiv.querySelector("#regiondiv").classList.contains("invisible")) {masterdiv.querySelector("#regiondiv").classList.add("invisible")}
+            if (!document.querySelector("#defregiondiv").classList.contains("invisible")) {document.querySelector("#defregiondiv").classList.add("invisible")}
+        } else {
+            if (masterdiv.querySelector("#regiondiv").classList.contains("invisible")) {masterdiv.querySelector("#regiondiv").classList.remove("invisible")}
+            let re = document.createElement("option")
+            re.innerHTML = "None"
+            re.value = null
+            masterdiv.querySelector("#regionsel").appendChild(re)
+            for (region of regions) {
+                if (r.data["regions"].includes(region.id)) {
+                    let re = document.createElement("option")
+                    re.innerHTML = region.name
+                    re.value = region.id
+                    masterdiv.querySelector("#regionsel").appendChild(re)
+                }
+            }
+            if (document.querySelector("#defregiondiv").classList.contains("invisible")) {document.querySelector("#defregiondiv").classList.remove("invisible")}
+            re = document.createElement("option")
+            re.innerHTML = "None"
+            re.value = null
+            document.querySelector("#defregionsel").appendChild(re)
+            for (region of regions) {
+                if (r.data["regions"].includes(region.id)) {
+                    let re = document.createElement("option")
+                    re.innerHTML = region.name
+                    re.value = region.id
+                    document.querySelector("#defregionsel").appendChild(re)
+                }
             }
         }
         for (time of ["realtime", "realtime_noloads", "ingame"]) {
@@ -580,6 +621,7 @@ document.querySelector("#generate").addEventListener("click", (e) => {
         }
         let splits = document.querySelector("#defsplits")
         let comment = document.querySelector("#defcomment")
+        let region = document.querySelector("#defregionsel")
         let date = document.querySelector("#defdate")
         let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
         let model = document.querySelectorAll(".masterdiv")[0]
@@ -625,6 +667,7 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                 }
                 run2.querySelector("#videolink").value = video.value
                 run2.querySelector("#catsel").value = cat
+                run2.querySelector("#regionsel").value = region.value
                 run2.querySelector("#pform").querySelector("select").value = platform.value
                 if (document.querySelector("#defemulator") != null) {
                     run2.querySelector("#emulator").checked = emulator
@@ -679,6 +722,7 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                         }
                         run2.querySelector("#videolink").value = video.value
                         run2.querySelector("#catsel").value = cat
+                        run2.querySelector("#regionsel").value = region.value
                         run2.querySelector("#pform").querySelector("select").value = platform.value
                         if (document.querySelector("#defemulator") != null) {
                             run2.querySelector("#emulator").checked = emulator
@@ -735,6 +779,7 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                         }
                         run2.querySelector("#videolink").value = video.value
                         run2.querySelector("#catsel").value = cat
+                        run2.querySelector("#regionsel").value = region.value
                         run2.querySelector("#pform").querySelector("select").value = platform.value
                         if (document.querySelector("#defemulator") != null) {
                             run2.querySelector("#emulator").checked = emulator
@@ -784,6 +829,38 @@ document.querySelector("#generate").addEventListener("click", (e) => {
 })
 document.querySelector("#submit").addEventListener("click", function() {
     if (confirm(`Are you sure you want to go through with this? \n \nYou are about to submit ${document.querySelectorAll(".masterdiv").length} runs. \n\nPlease double check everything before proceeding. \n\nClick "OK" to proceed.`)) {
-
+        let allruns = []
+        for (run2 of document.querySelectorAll(".masterdiv")) {
+            let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
+            run = {
+                "run": {
+                    "category": run2.querySelector("#catsel").value ,
+                    "level": run2.querySelector("#lvlsel").value, // create if
+                    "date": run2.querySelector("#date").value,
+                    "region": run2.querySelector("#regionsel").value, //create if
+                    "platform": run2.querySelector("#pform").querySelector("select").value,
+                    "times": {
+                        "realtime": 1234.56,
+                        "realtime_noloads": 1200.10,
+                        "ingame": 1150
+                    },
+                    "emulated": run2.querySelector("#emulator").checked, // create if
+                    "video": run2.querySelector("#videolink").value,
+                    "comment": run2.querySelector("#commentarea").value,
+                    "splitsio": run2.querySelector("#splits").value,
+                    "variables": {
+                        "<variable ID>": {
+                        "type": "user-defined",
+                        "value": "my value"
+                        },
+                        "<variable ID>": {
+                        "type": "pre-defined",
+                        "value": "<value ID>"
+                        }
+                    }
+                }
+            }
+            allruns.push(run)
+        }
     }
 }) 
