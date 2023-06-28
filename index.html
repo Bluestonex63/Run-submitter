@@ -31,7 +31,7 @@
     </div>
     <div style="border: 1px solid black; padding: 5px; width:calc(100%-210px); flex: 1">
       <form>
-        <div style="display:flex">
+        <div style="display:flex; position: relative;">
           <div class="defaultdiv">
             <div id="setlevel">
               <label><strong>Set default category:</strong></label><br>
@@ -51,18 +51,18 @@
           <div class="defaultdiv">
             <div id="choices">
               <label><strong>Generate runs:</strong></label><br>
-                <input type="radio" name="runsgen" checked>Categories cycle through levels<br>
-                <input type="radio" name="runsgen">Levels cycle through categories
+                <input value="1" type="radio" name="runsgen" checked>Categories cycle through levels<br>
+                <input value="2" type="radio" name="runsgen">Levels cycle through categories
             </div>
             <p></p>
             <div id="default_platform">
               <label><strong>Set platform:</strong></label>
-              <select></select>
+              <select id="defplatform"></select>
             </div><p></p>
             <div id="comment_splits">
-              <strong>Set  split.io link:</strong><br>
+              <strong>Set split.io link:</strong><br>
               <input type="url" id="defsplits" pattern="https://splits.io/.*" placeholder="https://splits.io/"> <p></p>
-              <strong>Set  comment:</strong><br>
+              <strong>Set comment:</strong><br>
               <textarea id="defcomment" placeholder="Optional"></textarea>
             </div>
           </div>
@@ -71,53 +71,57 @@
             <div id="defvariables"></div>
           </div>
           <div class="defaultdiv">
-            <strong>Time:</strong> <p></p>
-            <div id="deftime">
-              <div id="defrealtimemdiv" class="invisible">
-                <label>Real time (RTA):</label><br>
-                <div id="defrealtime">
-                  <input type="text" id="defrealtimehours" class="runtime">
-                  <label class="timelbl">h</label>
-                  <input type="text" id="defrealtimemins" class="runtime">
-                  <label class="timelbl">m</label>
-                  <input type="text" id="defrealtimesecs" class="runtime">
-                  <label class="timelbl">s</label>
-                  <input type="text" id="defrealtimems" class="runtime">
-                  <label class="timelbl">ms</label>
+            <div>
+              <strong>Time:</strong> <p></p>
+              <div id="deftime">
+                <div id="defrealtimemdiv" class="invisible">
+                  <label>Real time (RTA):</label><br>
+                  <div id="defrealtime">
+                    <input onchange="hours_ms(event)" type="text" id="defrealtimehours" class="runtime">
+                    <label class="timelbl">h</label>
+                    <input onchange="mins_secs(event)" type="text" id="defrealtimemins" class="runtime">
+                    <label class="timelbl">m</label>
+                    <input onchange="mins_secs(event)" type="text" id="defrealtimesecs" class="runtime">
+                    <label class="timelbl">s</label>
+                    <input onchange="hours_ms(event)" type="text" id="defrealtimems" class="runtime">
+                    <label class="timelbl">ms</label>
+                  </div>
                 </div>
-              </div>
-              <div id="defrealtime_noloadsmdiv" class="invisible">
-                <label>Real time without loads (LRT):</label><br>
-                <div id="defrealtime_noloads">
-                  <input type="text" id="defrealtime_noloadshours" class="runtime">
-                  <label class="timelbl">h </label>
-                  <input type="text" id="defrealtime_noloadsemins" class="runtime">
-                  <label class="timelbl">m </label>
-                  <input type="text" id="defrealtime_noloadssecs" class="runtime">
-                  <label class="timelbl">s </label>
-                  <input type="text" id="defrealtime_noloadsms" class="runtime">
-                  <label class="timelbl">ms</label>
+                <div id="defrealtime_noloadsmdiv" class="invisible">
+                  <label>Real time without loads (LRT):</label><br>
+                  <div id="defrealtime_noloads">
+                    <input onchange="hours_ms(event)" type="text" id="defrealtime_noloadshours" class="runtime">
+                    <label class="timelbl">h </label>
+                    <input onchange="mins_secs(event)" type="text" id="defrealtime_noloadsmins" class="runtime">
+                    <label class="timelbl">m </label>
+                    <input onchange="mins_secs(event)" type="text" id="defrealtime_noloadssecs" class="runtime">
+                    <label class="timelbl">s </label>
+                    <input onchange="hours_ms(event)" type="text" id="defrealtime_noloadsms" class="runtime">
+                    <label class="timelbl">ms</label>
+                  </div>
                 </div>
-              </div>
-              <div id="defingamemdiv" class="invisible">
-                <label>In-game time (IGT):</label><br>
-                <div id="defingame">
-                  <input type="text" id="defingamehours" class="runtime">
-                  <label class="timelbl">h </label>
-                  <input type="text" id="defingameemins" class="runtime">
-                  <label class="timelbl">m </label>
-                  <input type="text" id="defingamesecs" class="runtime">
-                  <label class="timelbl">s </label>
-                  <input type="text" id="defingamems" class="runtime">
-                  <label class="timelbl">ms</label>
+                <div id="defingamemdiv" class="invisible">
+                  <label>In-game time (IGT):</label>
+                  <br>
+                  <div id="defingame">
+                    <input onchange="hours_ms(event)" type="text" id="defingamehours" class="runtime">
+                    <label class="timelbl">h </label>
+                    <input onchange="mins_secs(event)" type="text" id="defingamemins" class="runtime">
+                    <label class="timelbl">m </label>
+                    <input onchange="mins_secs(event)" type="text" id="defingamesecs" class="runtime">
+                    <label class="timelbl">s </label>
+                    <input onchange="hours_ms(event)" type="text" id="defingamems" class="runtime">
+                    <label class="timelbl">ms</label>
+                  </div>
                 </div>
+              </div> <p></p>
+              <div id="defdatediv">
+                <label><strong>Date:</strong></label> <br>
+                <input type="date" id="defdate">
               </div>
-            </div> <p></p>
-            <div id="defdatediv">
-              <label><strong>Date:</strong></label> <br>
-              <input type="date" id="defdate">
             </div>
           </div>
+          <button id="generate" style="width:25%; bottom: 0; right: 0; position: absolute;">Generate runs!</button>
         </div>
       </form>
     </div>
@@ -187,39 +191,39 @@
             <div id="realtimemdiv" class="invisible">
               <label>Real time (RTA):</label><br>
               <div id="realtime">
-                <input type="text" id="realtimehours" class="runtime">
+                <input onchange="hours_ms(event)" type="text" id="realtimehours" class="runtime">
                 <label class="timelbl">h</label>
-                <input type="text" id="realtimemins" class="runtime">
+                <input onchange="mins_secs(event)" type="text" id="realtimemins" class="runtime">
                 <label class="timelbl">m</label>
-                <input type="text" id="realtimesecs" class="runtime">
+                <input onchange="mins_secs(event)" type="text" id="realtimesecs" class="runtime">
                 <label class="timelbl">s</label>
-                <input type="text" id="realtimems" class="runtime">
+                <input onchange="hours_ms(event)" type="text" id="realtimems" class="runtime">
                 <label class="timelbl">ms</label>
               </div>
             </div>
             <div id="realtime_noloadsmdiv" class="invisible">
               <label>Real time without loads (LRT):</label><br>
               <div id="realtime_noloads">
-                <input type="text" id="realtime_noloadshours" class="runtime">
+                <input onchange="hours_ms(event)" type="text" id="realtime_noloadshours" class="runtime">
                 <label class="timelbl">h </label>
-                <input type="text" id="realtime_noloadsemins" class="runtime">
+                <input onchange="mins_secs(event)" type="text" id="realtime_noloadsmins" class="runtime">
                 <label class="timelbl">m </label>
-                <input type="text" id="realtime_noloadssecs" class="runtime">
+                <input onchange="mins_secs(event)" type="text" id="realtime_noloadssecs" class="runtime">
                 <label class="timelbl">s </label>
-                <input type="text" id="realtime_noloadsms" class="runtime">
+                <input onchange="hours_ms(event)" type="text" id="realtime_noloadsms" class="runtime">
                 <label class="timelbl">ms</label>
               </div>
             </div>
             <div id="ingamemdiv" class="invisible">
               <label>In-game time (IGT):</label><br>
               <div id="ingame">
-                <input type="text" id="ingamehours" class="runtime">
+                <input onchange="hours_ms(event)" type="text" id="ingamehours" class="runtime">
                 <label class="timelbl">h </label>
-                <input type="text" id="ingameemins" class="runtime">
+                <input onchange="mins_secs(event)" type="text" id="ingamemins" class="runtime">
                 <label class="timelbl">m </label>
-                <input type="text" id="ingamesecs" class="runtime">
+                <input onchange="mins_secs(event)" type="text" id="ingamesecs" class="runtime">
                 <label class="timelbl">s </label>
-                <input type="text" id="ingamems" class="runtime">
+                <input onchange="hours_ms(event)" type="text" id="ingamems" class="runtime">
                 <label class="timelbl">ms</label>
               </div>
             </div>

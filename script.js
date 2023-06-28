@@ -5,6 +5,7 @@ const src = "https://www.speedrun.com/api/v1/"
 let sel = []
 let platforms = []
 let sellist = []
+let ge = false
 Date.prototype.toDateInputValue = (function() {
     var local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
@@ -179,6 +180,7 @@ button.addEventListener("click", async function() {
             if (plats.data.length < 200) { break }
         }
     }
+    document.querySelector("#generate").disabled = true
     button.disabled = true
     let r = {}
         lvls = {}
@@ -299,6 +301,10 @@ button.addEventListener("click", async function() {
                 if(!document.querySelector("#def" + time + "mdiv").classList.contains("invisible")) {
                     document.querySelector("#def" + time + "mdiv").classList.add("invisible")
                 }
+                for (i of ["hours", "secs", "mins", "ms"]) {
+                    masterdiv.querySelector("#" + time + i).value = ""
+                    document.querySelector("#def" + time + i).value = ""
+                }
             }
         }
         lvlc(lvls, cats, masterdiv); varc(vari, lvls, cats, masterdiv)
@@ -343,6 +349,7 @@ button.addEventListener("click", async function() {
         lvlselv.innerHTML = ""
         let isIL = getSelectValues(catselv).find(val => Array.from(catselv).map(a => a.value).includes(val)) //.text.split(" - ")[1] == "IL"
         if (isIL != undefined) {  
+            for (gene of document.getElementsByName("runsgen")) {gene.disabled = false}
             if (Array.from(catselv).find(val => val.value == isIL).text.split(" - ")[1] == "IL") {
                 lvls.forEach(lvl => {
                     let opt = document.createElement("option");
@@ -355,9 +362,11 @@ button.addEventListener("click", async function() {
                 }
                 if (lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.remove("invisible") }
             } else {
+                for (gene of document.getElementsByName("runsgen")) {gene.disabled = true}
                 if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
             }
         } else {
+            for (gene of document.getElementsByName("runsgen")) {gene.disabled = true}
             if (!lvlselv.parentElement.classList.contains("invisible")) { lvlselv.parentElement.classList.add("invisible") }
         }
     }
@@ -392,7 +401,7 @@ button.addEventListener("click", async function() {
             form.parentElement.classList.remove("invisible")
             appvari.forEach(appvar => {
                 let inp = document.createElement("select")
-                inp.classList.add("variableselector")
+                inp.classList.add("defvariableselector")
                 let label = document.createElement("label")
                 if (!appvar.mandatory) {
                     let op = document.createElement("option")
@@ -408,11 +417,18 @@ button.addEventListener("click", async function() {
                 }
                 for (value of Object.keys(appvar.values.values)) {
                     let op = document.createElement("option")
-                    op.value = value
                     op.innerHTML = `${appvar.values.values[value].label}`
+                    op.value = value
                     inp.appendChild(op)
                 }
                 label.innerHTML = `${appvar.name}: `
+                if (appvar.category != null && appvar.scope.type != "single-level" ) { 
+                    label.innerHTML = `${appvar.name} - ${cats.find(cat => cat.id == appvar.category).name}:`
+                } else if (appvar.scope.type == "single-level" && appvar.category != null) {
+                    label.innerHTML = `${appvar.name} - (${lvls.find(lvl => lvl.id == appvar.scope.level).name}) ${cats.find(cat => cat.id == appvar.category).name}:`
+                } else if (appvar.scope.type == "single-level" && appvar.category == null) {
+                    label.innerHTML = `${appvar.name} - ${lvls.find(lvl => lvl.id == appvar.scope.level).name}:`
+                }
                 form.appendChild(document.createElement("p"))
                 form.appendChild(label)
                 form.appendChild(document.createElement("br"))
@@ -466,9 +482,15 @@ button.addEventListener("click", async function() {
     old_element2.parentNode.replaceChild(new_element2, old_element2);
     document.querySelector("#defaultlvl").addEventListener("change", () => {varup(vari, cats, lvls)})
     button.disabled = false
+    ge = true
+    document.querySelector("#generate").disabled = false
 })
 
 document.querySelector("#addarun").addEventListener("click", () => {
+    if (document.querySelectorAll(".masterdiv").length + 1 > 100) {
+        alert("You can't have more than 100 runs!")
+        return
+    }
     let run2 = document.querySelectorAll(".masterdiv")[0]
     run2 = run2.cloneNode(true)
     if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
@@ -525,4 +547,127 @@ let retract = (e) => {
     try {fset.querySelector("#lvlinfo").innerHTML = fset.querySelector("#lvlsel").value; if (fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.remove("invisible")}}
     catch {if (!fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.add("invisible")}}
 }
+function hours_ms(e) {
+    if (isNaN(Number(e.target.value)) || Number(e.target.value) < 0 || !Number.isInteger(Number(e.target.value))) {
+        e.target.value = ""
+    } else if (Number(e.target.value) > 999) {
+        e.target.value = "999"
+    } 
+}
+function mins_secs(e) {
+    if (isNaN(Number(e.target.value)) || Number(e.target.value) < 0 || !Number.isInteger(Number(e.target.value))) {
+        e.target.value = ""
+    } else if (Number(e.target.value) > 59) {
+        e.target.value = "59"
+    } 
+}
+document.querySelector("#generate").addEventListener("click", (e) => {
+    e.preventDefault()
+    if (!ge) {
+        alert("Please first input a game to generate runs")
+    } else {
+        let catsel = document.querySelector("#defaultcat")
+        let lvlsel = document.querySelector("#defaultlvl")
+        let video = document.querySelector("#defaultvid")
+        let platform = document.querySelector("#default_platform").querySelector("select")
+        let emulator;
+        if (document.querySelector("#defemulator") != null) {
+            emulator = document.querySelector("#defemulator").checked
+        }
+        let splits = document.querySelector("#defsplits")
+        let comment = document.querySelector("#defcomment")
+        let variables = document.querySelectorAll(".defvariableselector")
+        let date = document.querySelector("#defdate")
+        let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
+        let model = document.querySelectorAll(".masterdiv")[0]
+        model = model.cloneNode(true)
+        if (!document.getElementsByName("runsgen")[0].disabled) {
+            if (getSelectValues(lvlsel).length == 0) {
+                alert("Please select at least 1 level")
+                return
+            }
+            if (getSelectValues(catsel).length*getSelectValues(lvlsel).length > 100) {
+                alert("This will result in more than 100 runs!")
+                return
+            }
+        }
+        if (getSelectValues(catsel).length == 0) {
+            alert("Please select at least 1 category")
+            return
+        }
+        if (getSelectValues(catsel).length > 100) {
+            alert("This will result in more than 100 runs!")
+            return
+        }
+        for (m of document.querySelectorAll(".masterdiv")) {
+            m.remove()
+        }
+        Array.from(document.querySelector("#deftime").children).forEach(t => {
+            if (!t.classList.contains("invisible")) {
+                time[Object.keys(time).find(key => t.id.includes(key))] = [t.children[2].children[0].value, t.children[2].children[2].value, t.children[2].children[4].value, t.children[2].children[6].value]
+            }
+        })
+        if (document.getElementsByName("runsgen")[0].disabled) {
+            for (cat of getSelectedValues(catsel)) {
 
+            }
+        } else {
+            if (document.getElementsByName("runsgen")[0].checked) {
+                for (lvl of getSelectValues(lvlsel)) {
+                    for (cat of getSelectValues(catsel)) {
+                        let run2 = model.cloneNode(true)
+                        if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
+                        run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+                        if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+                            run2.querySelector("#retractdiv").style.width = "115px"
+                        } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+                            run2.querySelector("#retractdiv").style.width = "100px"
+                        }
+                        run2.querySelector("#videolink").value = video.value
+                        run2.querySelector("#catsel").value = cat
+                        run2.querySelector("#pform").querySelector("select").value = platform.value
+                        if (document.querySelector("#defemulator") != null) {
+                            run2.querySelector("#emulator").checked = emulator
+                        }
+                        run2.querySelector("#commentarea").value = comment.value
+                        run2.querySelector("#splits").value = splits.value
+                        run2.querySelector("#date").value = date.value
+                        Object.keys(time).forEach(t => {
+                            if (time[t].length != 0) {
+                                if (!time[t].every(timething => timething == "")) {
+                                    for (let i = 0; i < 4; i++) {
+                                        let hmsms = ["hours", "mins", "secs", "ms"]
+                                        run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
+                                    }
+                                }
+                            }
+                        })
+                        run2.querySelector("#delete").addEventListener("click", (e) => {
+                            if (document.querySelectorAll(".masterdiv").length != 1) {
+                                e.target.parentElement.parentElement.parentElement.remove()
+                            } else {
+                                alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                            }
+                        })
+                        if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+                        try {
+                            lvlc(lvls, cats, run2); 
+                            run2.querySelector("#lvlsel").value = lvl; 
+                            varc(vari, lvls, cats, run2); 
+                            run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
+                        }
+                        finally {
+                            document.querySelector("#runsdisplayer").appendChild(run2)
+                        }
+                    }
+                }
+            } else {
+                for (cat of getSelectValues(catsel)) {
+                    for (lvl of getSelectValues(lvlsel)) {
+
+                    }
+                }
+            }
+        }
+    }
+})
