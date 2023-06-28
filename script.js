@@ -133,6 +133,7 @@ let varc = (vari, lvls, cats, masterdiv) => {
         appvari.forEach(appvar => {
             let inp = document.createElement("select")
             inp.classList.add("variableselector")
+            inp.id = appvar.id
             let label = document.createElement("label")
             if (!appvar.mandatory) {
                 let op = document.createElement("option")
@@ -401,6 +402,7 @@ button.addEventListener("click", async function() {
             form.parentElement.classList.remove("invisible")
             appvari.forEach(appvar => {
                 let inp = document.createElement("select")
+                inp.id = appvar.id
                 inp.classList.add("defvariableselector")
                 let label = document.createElement("label")
                 if (!appvar.mandatory) {
@@ -608,8 +610,56 @@ document.querySelector("#generate").addEventListener("click", (e) => {
             }
         })
         if (document.getElementsByName("runsgen")[0].disabled) {
-            for (cat of getSelectedValues(catsel)) {
-
+            for (cat of getSelectValues(catsel)) {
+                let run2 = model.cloneNode(true)
+                if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
+                run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+                if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+                    run2.querySelector("#retractdiv").style.width = "115px"
+                } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+                    run2.querySelector("#retractdiv").style.width = "100px"
+                }
+                run2.querySelector("#videolink").value = video.value
+                run2.querySelector("#catsel").value = cat
+                run2.querySelector("#pform").querySelector("select").value = platform.value
+                if (document.querySelector("#defemulator") != null) {
+                    run2.querySelector("#emulator").checked = emulator
+                }
+                run2.querySelector("#commentarea").value = comment.value
+                run2.querySelector("#splits").value = splits.value
+                run2.querySelector("#date").value = date.value
+                Object.keys(time).forEach(t => {
+                    if (time[t].length != 0) {
+                        if (!time[t].every(timething => timething == "")) {
+                            for (let i = 0; i < 4; i++) {
+                                let hmsms = ["hours", "mins", "secs", "ms"]
+                                run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
+                            }
+                        }
+                    }
+                })
+                run2.querySelector("#delete").addEventListener("click", (e) => {
+                    if (document.querySelectorAll(".masterdiv").length != 1) {
+                        e.target.parentElement.parentElement.parentElement.remove()
+                    } else {
+                        alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                    }
+                })
+                if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+                try {
+                    varc(vari, lvls, cats, run2); 
+                    for (variable of document.querySelectorAll(".defvariableselector")) {
+                        for (v of run2.querySelectorAll(".variableselector")) {
+                            if (v.id == variable.id) {
+                                v.value = variable.value
+                            }
+                        }
+                    }
+                    run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
+                }
+                finally {
+                    document.querySelector("#runsdisplayer").appendChild(run2)
+                }
             }
         } else {
             if (document.getElementsByName("runsgen")[0].checked) {
@@ -654,6 +704,13 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                             lvlc(lvls, cats, run2); 
                             run2.querySelector("#lvlsel").value = lvl; 
                             varc(vari, lvls, cats, run2); 
+                            for (variable of document.querySelectorAll(".defvariableselector")) {
+                                for (v of run2.querySelectorAll(".variableselector")) {
+                                    if (v.id == variable.id) {
+                                        v.value = variable.value
+                                    }
+                                }
+                            }
                             run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
                         }
                         finally {
@@ -664,7 +721,57 @@ document.querySelector("#generate").addEventListener("click", (e) => {
             } else {
                 for (cat of getSelectValues(catsel)) {
                     for (lvl of getSelectValues(lvlsel)) {
-
+                        let run2 = model.cloneNode(true)
+                        if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
+                        run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+                        if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+                            run2.querySelector("#retractdiv").style.width = "115px"
+                        } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+                            run2.querySelector("#retractdiv").style.width = "100px"
+                        }
+                        run2.querySelector("#videolink").value = video.value
+                        run2.querySelector("#catsel").value = cat
+                        run2.querySelector("#pform").querySelector("select").value = platform.value
+                        if (document.querySelector("#defemulator") != null) {
+                            run2.querySelector("#emulator").checked = emulator
+                        }
+                        run2.querySelector("#commentarea").value = comment.value
+                        run2.querySelector("#splits").value = splits.value
+                        run2.querySelector("#date").value = date.value
+                        Object.keys(time).forEach(t => {
+                            if (time[t].length != 0) {
+                                if (!time[t].every(timething => timething == "")) {
+                                    for (let i = 0; i < 4; i++) {
+                                        let hmsms = ["hours", "mins", "secs", "ms"]
+                                        run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
+                                    }
+                                }
+                            }
+                        })
+                        run2.querySelector("#delete").addEventListener("click", (e) => {
+                            if (document.querySelectorAll(".masterdiv").length != 1) {
+                                e.target.parentElement.parentElement.parentElement.remove()
+                            } else {
+                                alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                            }
+                        })
+                        if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+                        try {
+                            lvlc(lvls, cats, run2); 
+                            run2.querySelector("#lvlsel").value = lvl; 
+                            varc(vari, lvls, cats, run2); 
+                            for (variable of document.querySelectorAll(".defvariableselector")) {
+                                for (v of run2.querySelectorAll(".variableselector")) {
+                                    if (v.id == variable.id) {
+                                        v.value = variable.value
+                                    }
+                                }
+                            }
+                            run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
+                        }
+                        finally {
+                            document.querySelector("#runsdisplayer").appendChild(run2)
+                        }
                     }
                 }
             }
