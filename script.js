@@ -181,6 +181,7 @@ button.addEventListener("click", async function() {
             if (plats.data.length < 200) { break }
         }
     }
+    document.querySelector("#submit").disabled = true
     document.querySelector("#generate").disabled = true
     button.disabled = true
     let r = {}
@@ -486,6 +487,7 @@ button.addEventListener("click", async function() {
     button.disabled = false
     ge = true
     document.querySelector("#generate").disabled = false
+    document.querySelector("#submit").disabled = false
 })
 
 document.querySelector("#addarun").addEventListener("click", () => {
@@ -546,7 +548,7 @@ let retract = (e) => {
             }
         }
     }
-    try {fset.querySelector("#lvlinfo").innerHTML = fset.querySelector("#lvlsel").value; if (fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.remove("invisible")}}
+    try {fset.querySelector("#lvlinfo").innerHTML = fset.querySelector("#lvlsel").options[fset.querySelector("#lvlsel").selectedIndex].text; if (fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.remove("invisible")}}
     catch {if (!fset.querySelector("#lvlinfodiv").classList.contains("invisible")) {fset.querySelector("#lvlinfodiv").classList.add("invisible")}}
 }
 function hours_ms(e) {
@@ -578,7 +580,6 @@ document.querySelector("#generate").addEventListener("click", (e) => {
         }
         let splits = document.querySelector("#defsplits")
         let comment = document.querySelector("#defcomment")
-        let variables = document.querySelectorAll(".defvariableselector")
         let date = document.querySelector("#defdate")
         let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
         let model = document.querySelectorAll(".masterdiv")[0]
@@ -600,6 +601,9 @@ document.querySelector("#generate").addEventListener("click", (e) => {
         if (getSelectValues(catsel).length > 100) {
             alert("This will result in more than 100 runs!")
             return
+        }
+        if (!splits.checkValidity()) {
+            alert("Please input valid splits!")
         }
         for (m of document.querySelectorAll(".masterdiv")) {
             m.remove()
@@ -778,3 +782,8 @@ document.querySelector("#generate").addEventListener("click", (e) => {
         }
     }
 })
+document.querySelector("#submit").addEventListener("click", function() {
+    if (confirm(`Are you sure you want to go through with this? \n \nYou are about to submit ${document.querySelectorAll(".masterdiv").length} runs. \n\nPlease double check everything before proceeding. \n\nClick "OK" to proceed.`)) {
+
+    }
+}) 
