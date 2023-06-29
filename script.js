@@ -27,8 +27,8 @@ function getSelectValues(select) {
     return result;
 }
 let POSTrun = async (key, run) => {
-    /*http://localhost:3000/srcPOSTruns*/
-    let api = await fetch("https://blueapi.deno.dev/srcPOSTruns", {
+    /*https://blueapi.deno.dev/srcPOSTruns*/
+    let api = await fetch("http://localhost:3000/srcPOSTruns", {
         method: "POST",
         headers: {
             "X-API-key": key,
@@ -36,7 +36,8 @@ let POSTrun = async (key, run) => {
         },
         body: JSON.stringify(run)
     })
-    return await api.json()
+    api = await api.json()
+    alert(api.status)
 }
 document.querySelector("#delete").addEventListener("click", (e) => {
     if (document.querySelectorAll(".masterdiv").length != 1) {
@@ -177,6 +178,8 @@ let varc = (vari, lvls, cats, masterdiv) => {
 button.addEventListener("click", async function() {
     document.querySelector("#submit").disabled = true
     document.querySelector("#generate").disabled = true
+    document.querySelector("#addarun").disabled = true
+    button.disabled = true
     if (platforms.length == 0) {
         for (let offset = 0; offset < 50; offset++) {
             let plats = await fetch(src + `platforms?max=200&offset=${offset*200}`).then(x => x.json())
@@ -191,7 +194,6 @@ button.addEventListener("click", async function() {
             if (reg.data.length < 200) { break }
         }
     }
-    button.disabled = true
     let r = {}
         lvls = {}
         cats = {}
@@ -202,6 +204,7 @@ button.addEventListener("click", async function() {
         lvls = await fetch(src + `games/${r.data.id}/levels`).then(x => x.json()).then(x => x.data)
         cats = await fetch(src + `games/${r.data.id}/categories`).then(x => x.json()).then(x => x.data)
         vari = await fetch(src + `games/${r.data.id}/variables`).then(x => x.json()).then(x => x.data)
+
         } catch (e) {alert(`There was an error, please contact Bluestonex64 (Bluestonex64#9816). \n\n${e}`); button.disabled = false; throw e}
     for (masterdiv of document.querySelectorAll(".masterdiv")) {
         let form = document.createElement("form")
@@ -529,6 +532,7 @@ button.addEventListener("click", async function() {
     ge = true
     document.querySelector("#generate").disabled = false
     document.querySelector("#submit").disabled = false
+    document.querySelector("#addarun").disabled = false
 })
 
 document.querySelector("#addarun").addEventListener("click", () => {
@@ -698,7 +702,16 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                     for (variable of document.querySelectorAll(".defvariableselector")) {
                         for (v of run2.querySelectorAll(".variableselector")) {
                             if (v.id == variable.id) {
-                                v.value = variable.value
+                                if (variable.value != "1") { 
+                                    v.value = variable.value
+                                } else {
+                                    v.value = variable.value
+                                    let definedvar = document.createElement("input")
+                                    definedvar.id = "definedvar"
+                                    definedvar.type = "text"
+                                    definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
+                                    v.parentElement.appendChild(definedvar)
+                                }
                             }
                         }
                     }
@@ -755,7 +768,16 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                             for (variable of document.querySelectorAll(".defvariableselector")) {
                                 for (v of run2.querySelectorAll(".variableselector")) {
                                     if (v.id == variable.id) {
-                                        v.value = variable.value
+                                        if (variable.value != "1") { 
+                                            v.value = variable.value
+                                        } else {
+                                            v.value = variable.value
+                                            let definedvar = document.createElement("input")
+                                            definedvar.id = "definedvar"
+                                            definedvar.type = "text"
+                                            definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
+                                            v.parentElement.appendChild(definedvar)
+                                        }
                                     }
                                 }
                             }
@@ -812,7 +834,16 @@ document.querySelector("#generate").addEventListener("click", (e) => {
                             for (variable of document.querySelectorAll(".defvariableselector")) {
                                 for (v of run2.querySelectorAll(".variableselector")) {
                                     if (v.id == variable.id) {
-                                        v.value = variable.value
+                                        if (variable.value != "1") { 
+                                            v.value = variable.value
+                                        } else {
+                                            v.value = variable.value
+                                            let definedvar = document.createElement("input")
+                                            definedvar.id = "definedvar"
+                                            definedvar.type = "text"
+                                            definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
+                                            v.parentElement.appendChild(definedvar)
+                                        }
                                     }
                                 }
                             }
@@ -829,38 +860,92 @@ document.querySelector("#generate").addEventListener("click", (e) => {
 })
 document.querySelector("#submit").addEventListener("click", function() {
     if (confirm(`Are you sure you want to go through with this? \n \nYou are about to submit ${document.querySelectorAll(".masterdiv").length} runs. \n\nPlease double check everything before proceeding. \n\nClick "OK" to proceed.`)) {
-        let allruns = []
+        if (key.value == "") {
+            al += "Please input an api key"
+        }
+        let allruns = {}
+        al = ""
         for (run2 of document.querySelectorAll(".masterdiv")) {
-            let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
-            run = {
-                "run": {
-                    "category": run2.querySelector("#catsel").value ,
-                    "level": run2.querySelector("#lvlsel").value, // create if
-                    "date": run2.querySelector("#date").value,
-                    "region": run2.querySelector("#regionsel").value, //create if
-                    "platform": run2.querySelector("#pform").querySelector("select").value,
-                    "times": {
-                        "realtime": 1234.56,
-                        "realtime_noloads": 1200.10,
-                        "ingame": 1150
-                    },
-                    "emulated": run2.querySelector("#emulator").checked, // create if
-                    "video": run2.querySelector("#videolink").value,
-                    "comment": run2.querySelector("#commentarea").value,
-                    "splitsio": run2.querySelector("#splits").value,
-                    "variables": {
-                        "<variable ID>": {
-                        "type": "user-defined",
-                        "value": "my value"
-                        },
-                        "<variable ID>": {
-                        "type": "pre-defined",
-                        "value": "<value ID>"
-                        }
+            let time = {"realtime": 0, "ingame": 0, "realtime_noloads": 0}
+            for (i of [["hours", 3600], ["mins", 60], ["secs", 1], ["ms", 0.001]]) {
+                for (i2 of Object.keys(time)) {
+                    if (!isNaN(Number(run2.querySelector("#" + i2 + i[0]).value))) {
+                        time[i2] += Number(run2.querySelector("#" + i2 + i[0]).value) * i[1]
                     }
                 }
             }
-            allruns.push(run)
+            try {
+                let u = new URL(run2.querySelector("#videolink").value)
+            } catch {
+                al += run2.querySelector("#retractdiv").querySelector("h2").innerHTML + " doesn't have a valid video url.\n"
+            }
+            run = {
+                "run": {
+                    "category": run2.querySelector("#catsel").value ,
+                    "date": run2.querySelector("#date").value,
+                    "platform": run2.querySelector("#pform").querySelector("select").value,
+                    "times": {},
+                    "video": run2.querySelector("#videolink").value,
+                    "variables": {}
+                }
+            }
+            for (v of run2.querySelectorAll(".variableselector")) {
+                run["run"]["variables"][v.id] = {}
+                if (Array.from(v.options).every(op => op.value != 1)) {
+                    run["run"]["variables"][v.id]["type"] = "pre-defined"
+                    run["run"]["variables"][v.id]["value"] = v.value
+                } else {
+                    run["run"]["variables"][v.id]["type"] = "user-defined"
+                    if (v.value == 1) {
+                        run["run"]["variables"][v.id]["value"] = v.parentElement.querySelector("#definedvar").value
+                        if (run["run"]["variables"][v.id]["value"] == "") {
+                            al += run2.querySelector("#retractdiv").querySelector("h2").innerHTML + " doesn't have a valid value for the variable.\n"
+                        }
+                    } else {
+                        run["run"]["variables"][v.id]["value"] = v.value
+                    }
+                }
+            }
+            if (run2.querySelector("#date").value == "") {
+                al += run2.querySelector("#retractdiv").querySelector("h2").innerHTML + " doesn't have a valid date.\n"
+            }
+            if (run2.querySelector("#splits").value != "") {
+                if (!run2.querySelector("#splits").checkValidity()) {
+                    al += run2.querySelector("#retractdiv").querySelector("h2").innerHTML + " doesn't have a valid splits url.\n"
+                }
+                run["run"]["splitsio"] = run2.querySelector("#splits").value
+            }
+            if (run2.querySelector("#commentarea").value != "") {
+                run["run"]["comment"] = run2.querySelector("#commentarea").value
+            }
+            console.log(run["run"]["variables"])
+            if (run2.querySelector("#lvlsel") != null) {
+                run["run"]["level"] = run2.querySelector("#lvlsel").value
+            }
+            if (run2.querySelector("#emulator") != null) {
+                run["run"]["emulated"] = run2.querySelector("#emulator").checked
+            }
+            console.log(run2.querySelector("#regiondiv").classList)
+            if (!run2.querySelector("#regiondiv").classList.contains("invisible")) {
+                run["run"]["region"] = run2.querySelector("#regionsel").value
+            }
+            for (i of ["ingame", "realtime_noloads", "realtime"]) {
+                if (!run2.querySelector("#"+i+"mdiv").classList.contains("invisible")) {
+                    if (time[i] != 0) {
+                        run["run"]["times"][i] = time[i]
+                    } 
+                }
+            }
+            if (Object.keys(run["run"]["times"]).length == 0) {
+                al += run2.querySelector("#retractdiv").querySelector("h2").innerHTML + " doesn't have any valid times.\n"
+            }
+            allruns[`${Array.from(document.querySelectorAll(".masterdiv")).indexOf(run2)}`] = run
+        }
+        if (al != "") {
+            alert(al)
+            return
+        } else {
+            POSTrun(key.value, allruns)
         }
     }
 }) 
