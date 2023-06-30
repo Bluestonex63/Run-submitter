@@ -66,6 +66,7 @@ app.post('/srcPOSTruns', async (req, res) => {
 						b = true
 					}
 				} else {
+					console.log("Sucesseful")
 					h = true
 				}
 				if (b || h) {
