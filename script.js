@@ -861,11 +861,11 @@ document.querySelector("#generate").addEventListener("click", (e) => {
 })
 document.querySelector("#submit").addEventListener("click", function() {
     if (confirm(`Are you sure you want to go through with this? \n \nYou are about to submit ${document.querySelectorAll(".masterdiv").length} runs. \n\nPlease double check everything before proceeding. \n\nClick "OK" to proceed.`)) {
+        al = ""
         if (key.value == "") {
             al += "Please input an api key"
         }
         let allruns = {}
-        al = ""
         for (run2 of document.querySelectorAll(".masterdiv")) {
             let time = {"realtime": 0, "ingame": 0, "realtime_noloads": 0}
             for (i of [["hours", 3600], ["mins", 60], ["secs", 1], ["ms", 0.001]]) {
