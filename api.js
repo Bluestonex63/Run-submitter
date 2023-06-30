@@ -52,7 +52,7 @@ app.post('/srcPOSTruns', async (req, res) => {
 					body: JSON.stringify(req.body[`${i}`])
 				})
 				r = await r.json()
-				if (!r.ok) {
+				if (r.data == undefined) {
 					if (r.status == 420) {
 						if (count < 3) {
 							await sleep(60000)
@@ -66,7 +66,6 @@ app.post('/srcPOSTruns', async (req, res) => {
 						b = true
 					}
 				} else {
-					console.log("Sucesseful")
 					h = true
 				}
 				if (b || h) {
