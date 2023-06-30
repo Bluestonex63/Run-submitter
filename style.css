@@ -100,3 +100,8 @@ button:disabled {
     width:0px;
     height:0px;
 }
+h1 sub {
+    vertical-align: sub;
+    font-size: 12px;
+    font-family: 'Times New Roman', Times, serif;
+}
