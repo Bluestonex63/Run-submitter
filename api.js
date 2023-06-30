@@ -38,7 +38,7 @@ app.post('/srcPOSTruns', async (req, res) => {
 	} else {
 		res.json({status: 200, message: `Your request has been recieved sucessefully!\n\nThe estimated time until the runs are submitted is: ${Object.keys(req.body).length*2.4 + 2.4} seconds.\n\nIf your runs aren't submitted soon, please contact Bluestonex64 on discord.`})
 		let b = false
-		for (let i = 1;i < Object.keys(req.body).length; i++) {
+		for (let i = 0;i < Object.keys(req.body).length; i++) {
 			let h = false
 			let start = Date.now()
 			let count = 0
