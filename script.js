@@ -433,21 +433,33 @@ button.addEventListener("click", async function() {
         if (lvlselv.parentElement.classList.contains("invisible")) {
             appvari = vari.filter(variable => { 
                 if (variable.category != null) {
-                    return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                    try {
+                        return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                    } catch {}
                 } else {
-                    return variable.scope.type == "full-game" || variable.scope.type == "global"
+                    try {
+                        return variable.scope.type == "full-game" || variable.scope.type == "global"
+                    } catch {}
                 }
             })
         } else {
             appvari = vari.filter(variable => { 
                 if (variable.category != null && variable.scope.type != "single-level" ) {
-                    return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                    try {
+                        return getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                    } catch {}
                 } else if (variable.scope.type == "single-level" && variable.category != null) {
-                    return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id) && getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                    try {
+                        return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id) && getSelectValues(catselv).includes(cats.find(cat => variable.category == cat.id).id)
+                    } catch {}
                 } else if (variable.scope.type == "single-level" && variable.category == null) {
-                    return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id)
+                    try {
+                        return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id)
+                    } catch {}
                 } else {
-                    return variable.scope.type == "all-levels" || variable.scope.type == "global"
+                    try {
+                        return variable.scope.type == "all-levels" || variable.scope.type == "global"
+                    } catch {}
                 }
             })
         }
