@@ -37,7 +37,8 @@ let POSTrun = async (key, run) => {
         body: JSON.stringify(run)
     })
     api = await api.json()
-    alert(api.status)
+    alert(api.message)
+    location.reload()
 }
 document.querySelector("#delete").addEventListener("click", (e) => {
     if (document.querySelectorAll(".masterdiv").length != 1) {
