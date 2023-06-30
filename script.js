@@ -27,7 +27,7 @@ function getSelectValues(select) {
     return result;
 }
 let POSTrun = async (key, run) => {
-    let api = await fetch("http://localhost:3000/srcPOSTruns", {
+    let api = await fetch("https://submitter.deno.dev/srcPOSTruns", {
         method: "POST",
         headers: {
             "X-API-key": key,
