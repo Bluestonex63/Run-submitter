@@ -110,7 +110,9 @@ let varc = (vari, lvls, cats, masterdiv) => {
     if (lvlsel == null) {
         appvari = vari.filter(variable => { 
             if (variable.category != null) {
-                return cats.find(cat => variable.category == cat.id).id == catselv
+                try {
+                    return cats.find(cat => variable.category == cat.id).id == catselv
+                } catch {}
             } else {
                 return variable.scope.type == "full-game" || variable.scope.type == "global"
             }
@@ -118,13 +120,21 @@ let varc = (vari, lvls, cats, masterdiv) => {
     } else {
         appvari = vari.filter(variable => { 
             if (variable.category != null && variable.scope.type != "single-level" ) {
-                return cats.find(cat => variable.category == cat.id).id == catselv
+                try {
+                    return cats.find(cat => variable.category == cat.id).id == catselv
+                } catch {}
             } else if (variable.scope.type == "single-level" && variable.category != null) {
-                return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value && cats.find(cat => variable.category == cat.id).id == catselv
+                try {
+                    return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value && cats.find(cat => variable.category == cat.id).id == catselv
+                } catch {}
             } else if (variable.scope.type == "single-level" && variable.category == null) {
-                return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value
+                try {
+                    return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value
+                } catch {}
             } else {
-                return variable.scope.type == "all-levels" || variable.scope.type == "global"
+                try {
+                    return variable.scope.type == "all-levels" || variable.scope.type == "global"
+                } catch {}
             }
         })
     }
