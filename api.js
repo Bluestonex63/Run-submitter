@@ -42,6 +42,9 @@ app.get('/script.js', (req, res) => {
 app.get('/style.css', (req, res) => {
 	res.sendFile("style.css", { root: __dirname })
 })
+app.get('/x.png', (req, res) => {
+	res.sendFile("x.png", { root: __dirname })
+})
 app.post('/srcPOSTruns', async (req, res) => {
 	let headers = req.headers
 	if (headers.get("x-api-key") == undefined) {
