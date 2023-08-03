@@ -633,246 +633,248 @@ function mins_secs(e) {
     } 
 }
 document.querySelector("#generate").addEventListener("click", (e) => {
-    e.preventDefault()
-    if (!ge) {
-        alert("Please first input a game to generate runs")
-    } else {
-        let catsel = document.querySelector("#defaultcat")
-        let lvlsel = document.querySelector("#defaultlvl")
-        let video = document.querySelector("#defaultvid")
-        let platform = document.querySelector("#default_platform").querySelector("select")
-        let emulator;
-        if (document.querySelector("#defemulator") != null) {
-            emulator = document.querySelector("#defemulator").checked
-        }
-        let splits = document.querySelector("#defsplits")
-        let comment = document.querySelector("#defcomment")
-        let region = document.querySelector("#defregionsel")
-        let date = document.querySelector("#defdate")
-        let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
-        let model = document.querySelectorAll(".masterdiv")[0]
-        model = model.cloneNode(true)
-        if (!document.getElementsByName("runsgen")[0].disabled) {
-            if (getSelectValues(lvlsel).length == 0) {
-                alert("Please select at least 1 level")
+    if (confirm(`Are you sure you want to go through with this? (It will delete all your current runs!)`)) {
+        e.preventDefault()
+        if (!ge) {
+            alert("Please first input a game to generate runs")
+        } else {
+            let catsel = document.querySelector("#defaultcat")
+            let lvlsel = document.querySelector("#defaultlvl")
+            let video = document.querySelector("#defaultvid")
+            let platform = document.querySelector("#default_platform").querySelector("select")
+            let emulator;
+            if (document.querySelector("#defemulator") != null) {
+                emulator = document.querySelector("#defemulator").checked
+            }
+            let splits = document.querySelector("#defsplits")
+            let comment = document.querySelector("#defcomment")
+            let region = document.querySelector("#defregionsel")
+            let date = document.querySelector("#defdate")
+            let time = {"realtime": [], "ingame": [], "realtime_noloads": []}
+            let model = document.querySelectorAll(".masterdiv")[0]
+            model = model.cloneNode(true)
+            if (!document.getElementsByName("runsgen")[0].disabled) {
+                if (getSelectValues(lvlsel).length == 0) {
+                    alert("Please select at least 1 level")
+                    return
+                }
+                if (getSelectValues(catsel).length*getSelectValues(lvlsel).length > 100) {
+                    alert("This will result in more than 100 runs!")
+                    return
+                }
+            }
+            if (getSelectValues(catsel).length == 0) {
+                alert("Please select at least 1 category")
                 return
             }
-            if (getSelectValues(catsel).length*getSelectValues(lvlsel).length > 100) {
+            if (getSelectValues(catsel).length > 100) {
                 alert("This will result in more than 100 runs!")
                 return
             }
-        }
-        if (getSelectValues(catsel).length == 0) {
-            alert("Please select at least 1 category")
-            return
-        }
-        if (getSelectValues(catsel).length > 100) {
-            alert("This will result in more than 100 runs!")
-            return
-        }
-        if (!splits.checkValidity()) {
-            alert("Please input valid splits!")
-        }
-        for (m of document.querySelectorAll(".masterdiv")) {
-            m.remove()
-        }
-        Array.from(document.querySelector("#deftime").children).forEach(t => {
-            if (!t.classList.contains("invisible")) {
-                time[Object.keys(time).find(key => t.id.includes(key))] = [t.children[2].children[0].value, t.children[2].children[2].value, t.children[2].children[4].value, t.children[2].children[6].value]
+            if (!splits.checkValidity()) {
+                alert("Please input valid splits!")
             }
-        })
-        if (document.getElementsByName("runsgen")[0].disabled) {
-            for (cat of getSelectValues(catsel)) {
-                let run2 = model.cloneNode(true)
-                if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
-                run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
-                if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
-                    run2.querySelector("#retractdiv").style.width = "115px"
-                } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
-                    run2.querySelector("#retractdiv").style.width = "100px"
+            for (m of document.querySelectorAll(".masterdiv")) {
+                m.remove()
+            }
+            Array.from(document.querySelector("#deftime").children).forEach(t => {
+                if (!t.classList.contains("invisible")) {
+                    time[Object.keys(time).find(key => t.id.includes(key))] = [t.children[2].children[0].value, t.children[2].children[2].value, t.children[2].children[4].value, t.children[2].children[6].value]
                 }
-                run2.querySelector("#videolink").value = video.value
-                run2.querySelector("#catsel").value = cat
-                run2.querySelector("#regionsel").value = region.value
-                run2.querySelector("#pform").querySelector("select").value = platform.value
-                if (document.querySelector("#defemulator") != null) {
-                    run2.querySelector("#emulator").checked = emulator
-                }
-                run2.querySelector("#commentarea").value = comment.value
-                run2.querySelector("#splits").value = splits.value
-                run2.querySelector("#date").value = date.value
-                Object.keys(time).forEach(t => {
-                    if (time[t].length != 0) {
-                        if (!time[t].every(timething => timething == "")) {
-                            for (let i = 0; i < 4; i++) {
-                                let hmsms = ["hours", "mins", "secs", "ms"]
-                                run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
-                            }
-                        }
+            })
+            if (document.getElementsByName("runsgen")[0].disabled) {
+                for (cat of getSelectValues(catsel)) {
+                    let run2 = model.cloneNode(true)
+                    if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
+                    run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+                    if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+                        run2.querySelector("#retractdiv").style.width = "115px"
+                    } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+                        run2.querySelector("#retractdiv").style.width = "100px"
                     }
-                })
-                run2.querySelector("#delete").addEventListener("click", (e) => {
-                    if (document.querySelectorAll(".masterdiv").length != 1) {
-                        e.target.parentElement.parentElement.parentElement.remove()
-                    } else {
-                        alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                    run2.querySelector("#videolink").value = video.value
+                    run2.querySelector("#catsel").value = cat
+                    run2.querySelector("#regionsel").value = region.value
+                    run2.querySelector("#pform").querySelector("select").value = platform.value
+                    if (document.querySelector("#defemulator") != null) {
+                        run2.querySelector("#emulator").checked = emulator
                     }
-                })
-                if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
-                try {
-                    varc(vari, lvls, cats, run2); 
-                    for (variable of document.querySelectorAll(".defvariableselector")) {
-                        for (v of run2.querySelectorAll(".variableselector")) {
-                            if (v.id == variable.id) {
-                                if (variable.value != "1") { 
-                                    v.value = variable.value
-                                } else {
-                                    v.value = variable.value
-                                    let definedvar = document.createElement("input")
-                                    definedvar.id = "definedvar"
-                                    definedvar.type = "text"
-                                    definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
-                                    v.parentElement.appendChild(definedvar)
+                    run2.querySelector("#commentarea").value = comment.value
+                    run2.querySelector("#splits").value = splits.value
+                    run2.querySelector("#date").value = date.value
+                    Object.keys(time).forEach(t => {
+                        if (time[t].length != 0) {
+                            if (!time[t].every(timething => timething == "")) {
+                                for (let i = 0; i < 4; i++) {
+                                    let hmsms = ["hours", "mins", "secs", "ms"]
+                                    run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
                                 }
                             }
                         }
-                    }
-                    run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
-                }
-                finally {
-                    document.querySelector("#runsdisplayer").appendChild(run2)
-                }
-            }
-        } else {
-            if (document.getElementsByName("runsgen")[0].checked) {
-                for (lvl of getSelectValues(lvlsel)) {
-                    for (cat of getSelectValues(catsel)) {
-                        let run2 = model.cloneNode(true)
-                        if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
-                        run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
-                        if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
-                            run2.querySelector("#retractdiv").style.width = "115px"
-                        } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
-                            run2.querySelector("#retractdiv").style.width = "100px"
+                    })
+                    run2.querySelector("#delete").addEventListener("click", (e) => {
+                        if (document.querySelectorAll(".masterdiv").length != 1) {
+                            e.target.parentElement.parentElement.parentElement.remove()
+                        } else {
+                            alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
                         }
-                        run2.querySelector("#videolink").value = video.value
-                        run2.querySelector("#catsel").value = cat
-                        run2.querySelector("#regionsel").value = region.value
-                        run2.querySelector("#pform").querySelector("select").value = platform.value
-                        if (document.querySelector("#defemulator") != null) {
-                            run2.querySelector("#emulator").checked = emulator
-                        }
-                        run2.querySelector("#commentarea").value = comment.value
-                        run2.querySelector("#splits").value = splits.value
-                        run2.querySelector("#date").value = date.value
-                        Object.keys(time).forEach(t => {
-                            if (time[t].length != 0) {
-                                if (!time[t].every(timething => timething == "")) {
-                                    for (let i = 0; i < 4; i++) {
-                                        let hmsms = ["hours", "mins", "secs", "ms"]
-                                        run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
+                    })
+                    if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+                    try {
+                        varc(vari, lvls, cats, run2); 
+                        for (variable of document.querySelectorAll(".defvariableselector")) {
+                            for (v of run2.querySelectorAll(".variableselector")) {
+                                if (v.id == variable.id) {
+                                    if (variable.value != "1") { 
+                                        v.value = variable.value
+                                    } else {
+                                        v.value = variable.value
+                                        let definedvar = document.createElement("input")
+                                        definedvar.id = "definedvar"
+                                        definedvar.type = "text"
+                                        definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
+                                        v.parentElement.appendChild(definedvar)
                                     }
                                 }
                             }
-                        })
-                        run2.querySelector("#delete").addEventListener("click", (e) => {
-                            if (document.querySelectorAll(".masterdiv").length != 1) {
-                                e.target.parentElement.parentElement.parentElement.remove()
-                            } else {
-                                alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
-                            }
-                        })
-                        if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
-                        try {
-                            lvlc(lvls, cats, run2); 
-                            run2.querySelector("#lvlsel").value = lvl; 
-                            varc(vari, lvls, cats, run2); 
-                            for (variable of document.querySelectorAll(".defvariableselector")) {
-                                for (v of run2.querySelectorAll(".variableselector")) {
-                                    if (v.id == variable.id) {
-                                        if (variable.value != "1") { 
-                                            v.value = variable.value
-                                        } else {
-                                            v.value = variable.value
-                                            let definedvar = document.createElement("input")
-                                            definedvar.id = "definedvar"
-                                            definedvar.type = "text"
-                                            definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
-                                            v.parentElement.appendChild(definedvar)
-                                        }
-                                    }
-                                }
-                            }
-                            run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
                         }
-                        finally {
-                            document.querySelector("#runsdisplayer").appendChild(run2)
-                        }
+                        run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
+                    }
+                    finally {
+                        document.querySelector("#runsdisplayer").appendChild(run2)
                     }
                 }
             } else {
-                for (cat of getSelectValues(catsel)) {
+                if (document.getElementsByName("runsgen")[0].checked) {
                     for (lvl of getSelectValues(lvlsel)) {
-                        let run2 = model.cloneNode(true)
-                        if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
-                        run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
-                        if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
-                            run2.querySelector("#retractdiv").style.width = "115px"
-                        } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
-                            run2.querySelector("#retractdiv").style.width = "100px"
-                        }
-                        run2.querySelector("#videolink").value = video.value
-                        run2.querySelector("#catsel").value = cat
-                        run2.querySelector("#regionsel").value = region.value
-                        run2.querySelector("#pform").querySelector("select").value = platform.value
-                        if (document.querySelector("#defemulator") != null) {
-                            run2.querySelector("#emulator").checked = emulator
-                        }
-                        run2.querySelector("#commentarea").value = comment.value
-                        run2.querySelector("#splits").value = splits.value
-                        run2.querySelector("#date").value = date.value
-                        Object.keys(time).forEach(t => {
-                            if (time[t].length != 0) {
-                                if (!time[t].every(timething => timething == "")) {
-                                    for (let i = 0; i < 4; i++) {
-                                        let hmsms = ["hours", "mins", "secs", "ms"]
-                                        run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
-                                    }
-                                }
+                        for (cat of getSelectValues(catsel)) {
+                            let run2 = model.cloneNode(true)
+                            if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
+                            run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+                            if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+                                run2.querySelector("#retractdiv").style.width = "115px"
+                            } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+                                run2.querySelector("#retractdiv").style.width = "100px"
                             }
-                        })
-                        run2.querySelector("#delete").addEventListener("click", (e) => {
-                            if (document.querySelectorAll(".masterdiv").length != 1) {
-                                e.target.parentElement.parentElement.parentElement.remove()
-                            } else {
-                                alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                            run2.querySelector("#videolink").value = video.value
+                            run2.querySelector("#catsel").value = cat
+                            run2.querySelector("#regionsel").value = region.value
+                            run2.querySelector("#pform").querySelector("select").value = platform.value
+                            if (document.querySelector("#defemulator") != null) {
+                                run2.querySelector("#emulator").checked = emulator
                             }
-                        })
-                        if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
-                        try {
-                            lvlc(lvls, cats, run2); 
-                            run2.querySelector("#lvlsel").value = lvl; 
-                            varc(vari, lvls, cats, run2); 
-                            for (variable of document.querySelectorAll(".defvariableselector")) {
-                                for (v of run2.querySelectorAll(".variableselector")) {
-                                    if (v.id == variable.id) {
-                                        if (variable.value != "1") { 
-                                            v.value = variable.value
-                                        } else {
-                                            v.value = variable.value
-                                            let definedvar = document.createElement("input")
-                                            definedvar.id = "definedvar"
-                                            definedvar.type = "text"
-                                            definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
-                                            v.parentElement.appendChild(definedvar)
+                            run2.querySelector("#commentarea").value = comment.value
+                            run2.querySelector("#splits").value = splits.value
+                            run2.querySelector("#date").value = date.value
+                            Object.keys(time).forEach(t => {
+                                if (time[t].length != 0) {
+                                    if (!time[t].every(timething => timething == "")) {
+                                        for (let i = 0; i < 4; i++) {
+                                            let hmsms = ["hours", "mins", "secs", "ms"]
+                                            run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
                                         }
                                     }
                                 }
+                            })
+                            run2.querySelector("#delete").addEventListener("click", (e) => {
+                                if (document.querySelectorAll(".masterdiv").length != 1) {
+                                    e.target.parentElement.parentElement.parentElement.remove()
+                                } else {
+                                    alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                                }
+                            })
+                            if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+                            try {
+                                lvlc(lvls, cats, run2); 
+                                run2.querySelector("#lvlsel").value = lvl; 
+                                varc(vari, lvls, cats, run2); 
+                                for (variable of document.querySelectorAll(".defvariableselector")) {
+                                    for (v of run2.querySelectorAll(".variableselector")) {
+                                        if (v.id == variable.id) {
+                                            if (variable.value != "1") { 
+                                                v.value = variable.value
+                                            } else {
+                                                v.value = variable.value
+                                                let definedvar = document.createElement("input")
+                                                definedvar.id = "definedvar"
+                                                definedvar.type = "text"
+                                                definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
+                                                v.parentElement.appendChild(definedvar)
+                                            }
+                                        }
+                                    }
+                                }
+                                run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
                             }
-                            run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
+                            finally {
+                                document.querySelector("#runsdisplayer").appendChild(run2)
+                            }
                         }
-                        finally {
-                            document.querySelector("#runsdisplayer").appendChild(run2)
+                    }
+                } else {
+                    for (cat of getSelectValues(catsel)) {
+                        for (lvl of getSelectValues(lvlsel)) {
+                            let run2 = model.cloneNode(true)
+                            if (!run2.querySelector("#runinfo").classList.contains("invisible")) {run2.querySelector("#runinfo").classList.add("invisible")}
+                            run2.children[0].children[0].children[0].innerHTML = `Run ${document.querySelectorAll(".masterdiv").length +1}`
+                            if (document.querySelectorAll(".masterdiv").length +1 >= 100) {
+                                run2.querySelector("#retractdiv").style.width = "115px"
+                            } else if (document.querySelectorAll(".masterdiv").length +1 >= 10) {
+                                run2.querySelector("#retractdiv").style.width = "100px"
+                            }
+                            run2.querySelector("#videolink").value = video.value
+                            run2.querySelector("#catsel").value = cat
+                            run2.querySelector("#regionsel").value = region.value
+                            run2.querySelector("#pform").querySelector("select").value = platform.value
+                            if (document.querySelector("#defemulator") != null) {
+                                run2.querySelector("#emulator").checked = emulator
+                            }
+                            run2.querySelector("#commentarea").value = comment.value
+                            run2.querySelector("#splits").value = splits.value
+                            run2.querySelector("#date").value = date.value
+                            Object.keys(time).forEach(t => {
+                                if (time[t].length != 0) {
+                                    if (!time[t].every(timething => timething == "")) {
+                                        for (let i = 0; i < 4; i++) {
+                                            let hmsms = ["hours", "mins", "secs", "ms"]
+                                            run2.querySelector(`#${t}${hmsms[i]}`).value = time[t][i]
+                                        }
+                                    }
+                                }
+                            })
+                            run2.querySelector("#delete").addEventListener("click", (e) => {
+                                if (document.querySelectorAll(".masterdiv").length != 1) {
+                                    e.target.parentElement.parentElement.parentElement.remove()
+                                } else {
+                                    alert("You can't delete your only run lmao, cuz I got too much skill issue for that")
+                                }
+                            })
+                            if (run2.querySelector(".runwrapdiv").classList.contains("runinvisible")) {run2.querySelector(".runwrapdiv").classList.remove("runinvisible"); run2.querySelector("#retract").innerHTML = "-"}
+                            try {
+                                lvlc(lvls, cats, run2); 
+                                run2.querySelector("#lvlsel").value = lvl; 
+                                varc(vari, lvls, cats, run2); 
+                                for (variable of document.querySelectorAll(".defvariableselector")) {
+                                    for (v of run2.querySelectorAll(".variableselector")) {
+                                        if (v.id == variable.id) {
+                                            if (variable.value != "1") { 
+                                                v.value = variable.value
+                                            } else {
+                                                v.value = variable.value
+                                                let definedvar = document.createElement("input")
+                                                definedvar.id = "definedvar"
+                                                definedvar.type = "text"
+                                                definedvar.value = variable.parentElement.querySelector("#defdefinedvar").value
+                                                v.parentElement.appendChild(definedvar)
+                                            }
+                                        }
+                                    }
+                                }
+                                run2.querySelector("#catsel").addEventListener("change", () => {lvlc(lvls, cats, run2); varc(vari, lvls, cats, run2)})
+                            }
+                            finally {
+                                document.querySelector("#runsdisplayer").appendChild(run2)
+                            }
                         }
                     }
                 }
