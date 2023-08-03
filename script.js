@@ -633,8 +633,8 @@ function mins_secs(e) {
     } 
 }
 document.querySelector("#generate").addEventListener("click", (e) => {
+    e.preventDefault()
     if (confirm(`Are you sure you want to go through with this? (It will delete all your current runs!)`)) {
-        e.preventDefault()
         if (!ge) {
             alert("Please first input a game to generate runs")
         } else {
