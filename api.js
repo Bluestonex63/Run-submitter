@@ -62,7 +62,7 @@ app.post('/srcPOSTruns', async (req, res) => {
 							b = true
 						}
 					} else {
-						console.log(r.message)
+						console.log(r.message, r.errors)
 						b = true
 					}
 				} else {
