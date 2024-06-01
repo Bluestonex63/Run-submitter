@@ -131,7 +131,7 @@ let varc = (vari, lvls, cats, masterdiv) => {
                 try {
                     return lvls.find(level => level.id == variable.scope.level).id == lvlsel.value
                 } catch {}
-            } else if (variable.scope.type == "all-level" && variable.category != null) {
+            } else if (variable.scope.type == "all-levels" && variable.category != null) {
                 try {
                     return cats.find(cat => variable.category == cat.id).id == catselv
                 } catch {}
