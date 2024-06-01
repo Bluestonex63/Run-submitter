@@ -460,6 +460,10 @@ button.addEventListener("click", async function() {
                     try {
                         return getSelectValues(lvlselv).includes(lvls.find(level => level.id == variable.scope.level).id)
                     } catch {}
+                } else if (variable.scope.type == "all-levels" && variable.category != null) {
+                    try {
+                        return cats.find(cat => variable.category == cat.id).id == catselv
+                    } catch {}
                 } else {
                     try {
                         return variable.scope.type == "all-levels" || variable.scope.type == "global"
