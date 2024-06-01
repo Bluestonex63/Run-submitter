@@ -977,6 +977,7 @@ document.querySelector("#submit").addEventListener("click", function() {
             alert(al)
             return
         } else {
+            console.log(allruns)
             POSTrun(key.value, allruns)
         }
     }
