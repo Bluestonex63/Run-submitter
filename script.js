@@ -410,7 +410,7 @@ button.addEventListener("click", async function() {
         let isIL = getSelectValues(catselv).find(val => Array.from(catselv).map(a => a.value).includes(val)) //.text.split(" - ")[1] == "IL"
         if (isIL != undefined) {  
             for (gene of document.getElementsByName("runsgen")) {gene.disabled = false}
-            if (Array.from(catselv).find(val => val.value == isIL).text.split(" - ")[1] == "IL") {
+            if (Array.from(catselv).find(val => val.value == isIL).text.split(" - ").reverse()[0] == "IL") {
                 lvls.forEach(lvl => {
                     let opt = document.createElement("option");
                     opt.innerHTML = `${lvl["name"]}`
@@ -532,17 +532,17 @@ button.addEventListener("click", async function() {
     old_element.parentNode.replaceChild(new_element, old_element);
     document.querySelector("#defaultcat").addEventListener("change", (e) => {
         if(getSelectValues(e.target).some(v => {
-            if(Array.from(e.target).find(val => v == val.value).text.split(" - ")[1] == "IL") {
-                if(getSelectValues(e.target).some(va => {return Array.from(e.target).find(val => va == val.value).text.split(" - ")[1] == "FG"})) {return true}
+            if(Array.from(e.target).find(val => v == val.value).text.split(" - ").reverse()[0] == "IL") {
+                if(getSelectValues(e.target).some(va => {return Array.from(e.target).find(val => va == val.value).text.split(" - ").reverse()[0] == "FG"})) {return true}
             }
         })) {
             try {
                 for (scope of ["IL", "FG"]) {
                     if (Array.from(e.target).find(val => val.value == getSelectValues(e.target).find(v => {
                         if (!sellist.includes(v)) {return v}
-                    })).text.split(" - ")[1] == scope) {
+                    })).text.split(" - ").reverse()[0] == scope) {
                         for (v of getSelectValues(e.target)) {
-                            if (Array.from(e.target).find(val => val.value == v).text.split(" - ")[1] == scope) {
+                            if (Array.from(e.target).find(val => val.value == v).text.split(" - ").reverse()[0] == scope) {
                                 Array.from(e.target).find(val => val.value == v).selected = false
                             }
                         }
@@ -977,7 +977,7 @@ document.querySelector("#submit").addEventListener("click", function() {
             alert(al)
             return
         } else {
-            console.log(allruns)
+            console.log(run2.querySelector("#catsel").value, allruns[0]["run"]["variable"])
             POSTrun(key.value, allruns)
         }
     }
