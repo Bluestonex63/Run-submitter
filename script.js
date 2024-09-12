@@ -175,14 +175,20 @@ let varc = (vari, lvls, cats, masterdiv) => {
             form.appendChild(document.createElement("br"))
             form.appendChild(inp)
             if (appvar["user-defined"]) {
+                if ((inp.nextElementSibling == null || inp.nextElementSibling.type != "text") && inp.value == 1) {
+                    let definedvar = document.createElement("input")
+                    definedvar.id = "definedvar"
+                    definedvar.type = "text"
+                    inp.insertAdjacentElement("afterend", definedvar)
+                }
                 inp.addEventListener("change", () => {
-                    if (masterdiv.querySelector("#definedvar") == null && inp.value == 1) {
+                    if ((inp.nextElementSibling == null || inp.nextElementSibling.type != "text") && inp.value == 1) {
                         let definedvar = document.createElement("input")
                         definedvar.id = "definedvar"
                         definedvar.type = "text"
-                        form.appendChild(definedvar)
-                    } else if (masterdiv.querySelector("#definedvar") != null && inp.value != 1) {
-                        form.removeChild(masterdiv.querySelector("#definedvar"))
+                        inp.insertAdjacentElement("afterend", definedvar)
+                    } else if (inp.nextElementSibling.type == "text" && inp.value != 1) {
+                        form.removeChild(inp.nextElementSibling)
                     } 
                 })
             }
@@ -511,14 +517,20 @@ button.addEventListener("click", async function() {
                 form.appendChild(document.createElement("br"))
                 form.appendChild(inp)
                 if (appvar["user-defined"]) {
+                    if ((inp.nextElementSibling == null || inp.nextElementSibling.type != "text") && inp.value == 1) {
+                        let definedvar = document.createElement("input")
+                        definedvar.id = "defdefinedvar"
+                        definedvar.type = "text"
+                        inp.insertAdjacentElement("afterend", definedvar)
+                    }
                     inp.addEventListener("change", () => {
-                        if (document.querySelector("#defdefinedvar") == null && inp.value == 1) {
+                        if ((inp.nextElementSibling == null || inp.nextElementSibling.type != "text") && inp.value == 1) {
                             let definedvar = document.createElement("input")
                             definedvar.id = "defdefinedvar"
                             definedvar.type = "text"
-                            form.appendChild(definedvar)
-                        } else if (document.querySelector("#defdefinedvar") != null && inp.value != 1) {
-                            form.removeChild(document.querySelector("#defdefinedvar"))
+                            inp.insertAdjacentElement("afterend", definedvar)
+                        } else if (inp.nextElementSibling.type == "text" && inp.value != 1) {
+                            form.removeChild(inp.nextElementSibling)
                         } 
                     })
                 }
