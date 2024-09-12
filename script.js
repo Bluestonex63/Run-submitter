@@ -941,7 +941,7 @@ document.querySelector("#submit").addEventListener("click", function() {
                 } else {
                     run["run"]["variables"][v.id]["type"] = "user-defined"
                     if (v.value == 1) {
-                        run["run"]["variables"][v.id]["value"] = v.parentElement.querySelector("#definedvar").value
+                        run["run"]["variables"][v.id]["value"] = v.nextElementSibling.value
                         if (run["run"]["variables"][v.id]["value"] == "") {
                             al += run2.querySelector("#retractdiv").querySelector("h2").innerHTML + " doesn't have a valid value for the variable.\n"
                         }
